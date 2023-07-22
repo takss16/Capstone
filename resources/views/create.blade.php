@@ -13,21 +13,14 @@
     </head>
     <body class="sb-nav-fixed">
         @include('navbar')
-
         </div>
             <div id="layoutSidenav_content">
                 <main class="mw-100 col-11">
-                <div class="container text-center col-md-12 ">
-                      <div class="container text-center col-md-9">
-                        <input type="text" id="searchInput" placeholder="Search...">
-                      </div>      
-                      <div class="div"><p>search patient</p></div>
-                      
+                     <div class="container text-center col-md-12 ">                    
                       <div class="h1">Patient Record</div>  
                       <div class="row">
                         <div class="col-12">
-                          <form class="text-center">
-                            
+                          <form class="text-center">                            
                             <div class="row g-3">
                               <div class="col-md-4">
                                 <label for="lastName" class="form-label">Last Name:</label>
@@ -41,9 +34,7 @@
                                 <label for="middleName" class="form-label">Middle Name:</label>
                                 <input type="text" class="form-control" id="middleName">
                               </div>
-                            </div>
-                            
-
+                            </div>                            
                             <div class="row g-3">
                               <div class="col-md-4">
                                 <label for="age" class="form-label">Age:</label>
@@ -55,7 +46,12 @@
                               </div>
                               <div class="col-md-4">
                                 <label for="civilStatus" class="form-label">Civil Status:</label>
-                                <input type="text" class="form-control" id="civilStatus">
+                                <select class="form-select" id="Forms" required onchange="showSpouse()">
+                                    <option value="">-- Select --</option>
+                                    <option value="">Single</option>
+                                    <option value="">Meried</option>
+                                    <option value="">Widowed</option>
+                                  </select>
                               </div>
                               <div class="col-md-4">
                                 <label for="contact" class="form-label">Contact:</label>
@@ -65,32 +61,75 @@
                                 <label for="address" class="form-label">Address:</label>
                                 <input type="text" class="form-control" id="address">
                               </div>
-                            </div>
-                            
-                            <div class="row justify-content-center mt-5">
-                              <div class="col-md-2 mb-3">
-                                <button type="submit" class="btn btn-primary btn-block">Save</button>
-                              </div>
-                              <div class="col-md-2 mb-3">
-                                <button type="submit" class="btn btn-primary btn-block">Update</button>
-                              </div>
-                              <div class="col-md-2 mb-3">
-                                <button type="submit" class="btn btn-primary btn-block">Delete</button><br>
-                              </div>
-                              <div class="col-md-2 mb-3">
-                                <button type="submit" class="btn btn-primary btn-block">Print</button><br>
-                              </div>
-                            </div>
+                            </div>                           
+                            <div class="row mt-5">
+                                <div class="col-md-3 mb-3">
+                                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                                </div>
+                              </div>                      
                                 </div>
                               </div>
+                              <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                Patients
+                            </div>
+                            <div class="card-body">
+                            <table id="datatablesSimple">
+                                  <thead>
+                                      <tr>
+                                         
+                                          <th>Patient ID</th>
+                                          <th>Name</th>
+                                          <th>Age</th>
+                                          <!-- <th>Civil Status</th> -->
+                                          <!-- <th>Address</th> -->
+                                          <th>Birthday</th>
+                                          <th>Contact</th>
+                                          <th>Action</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      @foreach ($patients as $patient)
+                                      <tr>
+                                      <td>{{ $patient->id }}</td>
+                                          <td>
+                                              {{ $patient->firstname }}
+                                              {{ $patient->midlename }}
+                                              {{ $patient->lastname }}
+                                          </td>
+                                          <td>{{ $patient->age }}</td>
+                                          <!-- <td>{{ $patient->civilstatus }}</td>
+                                          <td>{{ $patient->address }}</td> -->
+                                          <td>{{ $patient->birthday }}</td>
+                                          <td>{{ $patient->contact }}</td>
+                                         
+                                          
+                                          <td>
+                                          <a href="#" class="btn btn-primary edit" data-bs-toggle="modal" data-bs-target="#orangeModalSubscription" title="Edit">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+
+                                            <a href="#" class="btn btn-danger delete" data-bs-toggle="modal" data-bs-target="#orangeModalSubscriptions" title="Delete">
+                                                <i class="material-icons">delete</i>
+                                            </a>
+
+                                          </td>
+                                      </tr>
+                                      @endforeach
+                                      <!-- Add more rows as needed -->
+                                  </tbody>
+                              </table>
+
+                            </div>
+                        </div>
                             </div>
                           </form>
                         </div>
                       </div>
                     </div>
                 </main>
-            </div>
-       
+            </div>      
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
@@ -100,4 +139,4 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
     </body>
-</html>
+//</html>
