@@ -1,0 +1,7 @@
+php artisan make:model ModelName -m = means sabay mag create ng model at migration file 
+Sabagay napadaan ko lang yun, buti nalang thanks kay stackoveflow and chat gpt HAHA
+kay gpt din ako nagtanong e hahaha osya salamat master!
+
+Geh welcome hehe
+iba ka talaga haha salamat! 
+Sige sabihan mo nalang ako if may error or something in laravel hehehe
