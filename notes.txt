@@ -5,3 +5,8 @@ kay gpt din ako nagtanong e hahaha osya salamat master!
 Geh welcome hehe
 iba ka talaga haha salamat! 
 Sige sabihan mo nalang ako if may error or something in laravel hehehe
+
+If Gusto mo i-access ang files sa laravel project ganon may ways tayo:
+
+asset('path_inside_public') -> kapag gusto mo i'access sa loob ng public folder 
+Vite::asset('path') -> if nakavite ka (have vite.config.js) all around 

@@ -8,7 +8,7 @@
         <meta name="author" content="" />
         <title>Pabustan Birthing Clinic</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="{{Vite::asset('resources/css/styles.css')}}" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -24,6 +24,12 @@
             <div>
             <a href="{{route('records')}}" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
             </div>
+            @section('content')
+            <div class="mb-5 text-center mt-3">
+                <h3>Patient Maternal Record</h3>
+            </div>
+            <form action="{{ route('storeMaternalRecord', ['id' => $patient->id]) }}" method="POST" class="row g-3">
+            @csrf
                                             <div class="mb-5 text-center mt-3">
                                             <h3>Patient Maternal Record</h3> 
                                             </div>
@@ -170,7 +176,11 @@
                                                     </div>
                                                 </div>
         
-        
+                                                <div class="col-12">
+                                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                                        </div>
+                                                    </form>
+                                                @endsection
                                                 <div class="col-12">
                                                     <div class="row justify-content-center">
                                                         <div class="col-md-2 mb-3">

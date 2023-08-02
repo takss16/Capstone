@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pabustan Birthing Clinic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css">
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="{{Vite::asset('resources/css/styles.css')}}" rel="stylesheet" />
 
 </head>
 <body>

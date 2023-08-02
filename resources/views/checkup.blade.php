@@ -29,7 +29,7 @@
                                                                 
                                           <div class="col-12 bg-dark mb-3"></div>
                                           <div class="text-center mt-3">
-                                         <h3>Check-up````</h3>
+                                         <h3>Check-up</h3>
                                         </div>           
                                           <div class="col-md-6">        
                                             <label for="visit-date" class="form-label">Date of Visit:</label>           
