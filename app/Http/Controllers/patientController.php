@@ -28,13 +28,6 @@ class PatientController extends Controller
         return view('create', ['patients' => $patients]);
     }
 
-    // public function show($id)
-    // {
-    //     $patient = Patient::findOrFail($id);
-
-    //     return view('maternal', compact('patient'));
-    // }
-
     
     public function searchPatients(Request $request)
 {
@@ -140,7 +133,146 @@ public function store(Request $request)
     }
 
 
-   
+    public function showMaternalRecord($id)
+    {
+        $patient = Patient::findOrFail($id);
+        return view('maternal', ['patient' => $patient]);
+    }
+
+  
+
+
+    public function storeMaternalRecord(Request $request, $id)
+    {
+        // Validation for form fields
+        $validatedData = $request->validate([
+            'medical-history' => 'required',
+            'lmp' => 'required|date',
+            // Add more validation rules for other maternal record fields
+        ]);
+    
+        // Use try-catch block to handle any errors during database save
+        try {
+            $patient = Patient::findOrFail($id);
+    
+            // Create a new maternal record for the patient
+            $maternalRecord = MaternalRecord::create([
+                'patient_id_maternal' => $patient->id,
+                'medical_history' => $validatedData['medical-history'],
+                'lmp' => $validatedData['lmp'],
+                // Add other maternal record fields
+                'edc' => $request->input('edc'),
+                'aog' => $request->input('aog'),
+                'fht' => $request->input('fht'),
+                'pres' => $request->input('pres'),
+                'st' => $request->input('st'),
+                'effacement' => $request->input('effacement'),
+                'cervical_dilatation' => $request->input('cervical_dilatation'),
+                'bp' => $request->input('bp'),
+                'bow' => $request->input('bow'),
+                'color' => $request->input('color'),
+                'time_rupture' => $request->input('time-rupture'),
+                'condition' => $request->input('condition'),
+                'gravidity' => $request->input('gravidity'),
+                'parity' => $request->input('parity'),
+            ]);
+    
+            // Redirect back to the patient's maternal page after successful save
+            return redirect()->route('maternal', ['id' => $patient->id])->with('success', 'Maternal record added successfully!');
+        } catch (\Exception $e) {
+            // If an error occurs, dump the error message for debugging
+            dd($e->getMessage());
+        }
+    }
+
+            public function editMaternalRecord($id)
+        {
+            // Find the patient and their associated maternal record
+            $patient = Patient::findOrFail($id);
+            $maternalRecord = MaternalRecord::where('patient_id_maternal', $patient->id)->first();
+
+            // Return the view with the patient and maternal record data
+            return view('editMaternalForm', compact('patient', 'maternalRecord'));
+        }
+    
+        public function updateMaternalRecord(Request $request, $id)
+        {
+            // Validation for form fields
+            $validatedData = $request->validate([
+                'medical-history' => 'required',
+                'lmp' => 'required|date',
+                // Add more validation rules for other maternal record fields
+            ]);
+        
+            // Use try-catch block to handle any errors during database update
+            try {
+                $patient = Patient::findOrFail($id);
+        
+                // Find the existing maternal record associated with the patient
+                $maternalRecord = MaternalRecord::where('patient_id_maternal', $patient->id)->first();
+        
+                // Check if the maternal record exists
+                if (!$maternalRecord) {
+                    return redirect()->back()->with('error', 'Maternal record not found.');
+                }
+        
+                // Update the maternal record with the validated data
+                $maternalRecord->update([
+                    'lmp' => $validatedData['lmp'],
+                    // Add other maternal record fields to update
+                    'edc' => $request->input('edc'),
+                    'aog' => $request->input('aog'),
+                    'fht' => $request->input('fht'),
+                    'pres' => $request->input('pres'),
+                    'st' => $request->input('st'),
+                    'effacement' => $request->input('effacement'),
+                    'cervical_dilatation' => $request->input('cervical_dilatation'),
+                    'bp' => $request->input('bp'),
+                    'bow' => $request->input('bow'),
+                    'color' => $request->input('color'),
+                    'time_rupture' => $request->input('time-rupture'),
+                    'condition' => $request->input('condition'),
+                    'gravidity' => $request->input('gravidity'),
+                    'parity' => $request->input('parity'),
+                    'medical_history' => $validatedData['medical-history'],
+                ]);
+        
+                // Redirect back to the patient's maternal page after successful update
+                return redirect()->route('maternal', ['id' => $patient->id])->with('success', 'Maternal record updated successfully!');
+            } catch (\Exception $e) {
+                // If an error occurs, redirect back with an error message and dump the error for debugging
+                dd($e->getMessage());
+                return redirect()->back()->with('error', 'Failed to update maternal record.');
+            }
+        }
+
+        public function showDeleteConfirmation($id)
+            {
+                $patient = Patient::findOrFail($id);
+                $maternalRecord = MaternalRecord::where('patient_id_maternal', $patient->id)->first();
+
+                return view('delete-maternal', compact('patient', 'maternalRecord'));
+            }
+
+            public function deleteMaternalRecord($patientId, $maternalRecordId)
+            {
+                try {
+                    $maternalRecord = MaternalRecord::findOrFail($maternalRecordId);
+                    $maternalRecord->delete();
+        
+                    return redirect()->route('maternal', ['id' => $patientId])->with('success', 'Maternal record deleted successfully!');
+                } catch (\Exception $e) {
+                    return redirect()->back()->with('error', 'Failed to delete maternal record.');
+                }
+            }
+        
+
+
+
+
+
+
+
 }
 
 

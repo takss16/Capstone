@@ -24,5 +24,9 @@ class Patient extends Model
     {
         return $this->hasOne(Account::class);
     }
+    public function maternalRecord()
+    {
+        return $this->hasOne(MaternalRecord::class, 'patient_id_maternal');
+    }
 }
 

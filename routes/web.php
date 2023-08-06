@@ -89,8 +89,18 @@ Route::delete('/patients/{id}', [PatientController::class, 'destroy'])->name('de
 Route::get('/accounts', [PatientController::class, 'viewAccounts'])->name('accounts');
 
 
-Route::get('/patients/{id}/maternal-records', [PatientController::class, 'showMaternalRecordForm'])->name('maternalRecordForm');
-Route::post('/patients/{id}/maternal-records', [PatientController::class, 'storeMaternalRecord'])->name('storeMaternalRecord');
+Route::get('/patients/{id}/maternal', [PatientController::class, 'showMaternalRecord'])->name('maternal');
+Route::post('/patients/{id}/maternalrecord', [PatientController::class, 'storeMaternalRecord'])->name('storeMaternalRecord');
+
+// Show the edit form for maternal record
+Route::get('/patients/{id}/maternal/editmaternal', [PatientController::class, 'editMaternalRecord'])->name('editMaternalRecord');
+Route::put('/patients/{id}/updatematernal', [PatientController::class, 'updateMaternalRecord'])->name('updateMaternalRecord');
+
+Route::get('/patients/{id}/deleteMaternal', [PatientController::class, 'showDeleteConfirmation'])->name('showDeleteConfirmation');
+Route::delete('/patients/{id}/maternalrecord/{maternalRecordId}', [PatientController::class, 'deleteMaternalRecord'])->name('deleteMaternalRecord');
+// Route::get('/patients/{id}/maternalForm', [PatientController::class, 'showMaternalForm'])->name('maternalForm');
+
+
 
 // Route::get('/maternal/{id}', [PatientController::class, 'show'])->name('maternal');
 

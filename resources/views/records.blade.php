@@ -31,7 +31,7 @@
             @else
             @foreach($patients as $patient)
                 <div class="col-md-6 mt-3">
-                <div class="card shadow-lg" style="background-color:#;" >
+                <div class="card shadow-lg" style="" >
             <div class="card-header text-center">
                             <h2>
                                 {{ $patient->firstname }}
@@ -79,8 +79,7 @@
                             <div class="row mt-3">
                                 <div class="col">
                                     <div class="d-flex justify-content-between">
-                                    <a href="{{ route('maternalRecordForm', ['id' => $patient->id]) }}" class="btn btn-primary">Add Maternal Record</a>
-                                        <a href="{{ route('child', $patient->id) }}" class="btn btn-primary">Child</a>
+                                    <a href="{{ route('maternal', ['id' => $patient->id]) }}" class="btn btn-primary">Maternal</a>                                        <a href="{{ route('child', $patient->id) }}" class="btn btn-primary">Child</a>
                                         <a href="{{ route('checkup', $patient->id) }}" class="btn btn-primary">Checkup</a>
                                         <a href="{{ route('addmit', $patient->id) }}" class="btn btn-primary">Admission</a>
                                     </div>
