@@ -8,7 +8,7 @@
         <meta name="author" content="" />
         <title>Pabustan Birthing Clinic</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="{{Vite::asset('resources/css/styles.css')}}" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -16,59 +16,64 @@
         </div>
             <div id="layoutSidenav_content">
                 <main class="mw-100 col-11">
-                     <div class="container text-center col-md-12 ">                    
-                      <div class="h1">Patient Record</div>  
-                      <div class="row">
-                        <div class="col-12">
-                          <form class="text-center">                            
-                            <div class="row g-3">
-                              <div class="col-md-4">
-                                <label for="lastName" class="form-label">Last Name:</label>
-                                <input type="text" class="form-control" id="lastName" >
-                              </div>
-                              <div class="col-md-4">
-                                <label for="firstName" class="form-label">First Name:</label>
-                                <input type="text" class="form-control" id="firstName">
-                              </div>
-                              <div class="col-md-4">
-                                <label for="middleName" class="form-label">Middle Name:</label>
-                                <input type="text" class="form-control" id="middleName">
-                              </div>
-                            </div>                            
-                            <div class="row g-3">
-                              <div class="col-md-4">
-                                <label for="age" class="form-label">Age:</label>
-                                <input type="number" class="form-control" id="age">
-                              </div>
-                              <div class="col-md-4">
-                                <label for="birthday" class="form-label">Birthday:</label>
-                                <input type="date" class="form-control" id="birthday" >
-                              </div>
-                              <div class="col-md-4">
-                                <label for="civilStatus" class="form-label">Civil Status:</label>
-                                <select class="form-select" id="Forms" required onchange="showSpouse()">
-                                    <option value="">-- Select --</option>
-                                    <option value="">Single</option>
-                                    <option value="">Meried</option>
-                                    <option value="">Widowed</option>
-                                  </select>
-                              </div>
-                              <div class="col-md-4">
-                                <label for="contact" class="form-label">Contact:</label>
-                                <input type="text" class="form-control" id="contact">
-                              </div>
-                              <div class="col-md-4">
-                                <label for="address" class="form-label">Address:</label>
-                                <input type="text" class="form-control" id="address">
-                              </div>
-                            </div>                           
-                            <div class="row mt-5">
-                                <div class="col-md-3 mb-3">
-                                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                     <div class="container text-center col-md-12 ">  
+                     <form action="{{ route('store') }}" method="POST">
+                        @csrf
+                        <div class="container text-center col-md-12">
+                            <div class="h1">Patient Record</div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label for="lastName" class="form-label">Last Name:</label>
+                                            <input type="text" class="form-control" id="lastName" name="lastname">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="firstName" class="form-label">First Name:</label>
+                                            <input type="text" class="form-control" id="firstName" name="firstname">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="middleName" class="form-label">Middle Name:</label>
+                                            <input type="text" class="form-control" id="middleName" name="midlename">
+                                        </div>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label for="age" class="form-label">Age:</label>
+                                            <input type="number" class="form-control" id="age" name="age">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="birthday" class="form-label">Birthday:</label>
+                                            <input type="date" class="form-control" id="birthday" name="birthday">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="civilStatus" class="form-label">Civil Status:</label>
+                                            <select class="form-select" id="civilStatus" name="civilstatus" required onchange="showSpouse()">
+                                                <option value="">-- Select --</option>
+                                                <option value="Single">Single</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Widowed">Widowed</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="contact" class="form-label">Contact:</label>
+                                            <input type="text" class="form-control" id="contact" name="contact">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="address" class="form-label">Address:</label>
+                                            <input type="text" class="form-control" id="address" name="address">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-5">
+                                        <div class="col-md-3 mb-3">
+                                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                                        </div>
+                                    </div>
                                 </div>
-                              </div>                      
-                                </div>
-                              </div>
+                            </div>
+                        </div>
+                    </form>
+
                               <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -86,6 +91,7 @@
                                           <!-- <th>Address</th> -->
                                           <th>Birthday</th>
                                           <th>Contact</th>
+                                          <th>Civil Status</th>
                                           <th>Action</th>
                                       </tr>
                                   </thead>
@@ -103,15 +109,18 @@
                                           <td>{{ $patient->address }}</td> -->
                                           <td>{{ $patient->birthday }}</td>
                                           <td>{{ $patient->contact }}</td>
+                                          <td>{{ $patient->civilstatus }}</td>
                                          
                                           
                                           <td>
-                                          <a href="#" class="btn btn-primary edit" data-bs-toggle="modal" data-bs-target="#orangeModalSubscription" title="Edit">
-                                                <i class="material-icons">edit</i>
+                                          <a href="{{ route('edit', ['id' => $patient->id]) }}" class="btn btn-primary edit">
+                                            <i class="fa-regular fa-pen-to-square">edit</i>
                                             </a>
+                                            
+                                            <!-- data-bs-tog" -->
 
-                                            <a href="#" class="btn btn-danger delete" data-bs-toggle="modal" data-bs-target="#orangeModalSubscriptions" title="Delete">
-                                                <i class="material-icons">delete</i>
+                                            <a href="{{ route('delete', ['id' => $patient->id]) }}" class="btn btn-danger delete" >
+                                            <i class="fa-solid fa-trash">delete</i>
                                             </a>
 
                                           </td>
@@ -124,10 +133,12 @@
                             </div>
                         </div>
                             </div>
-                          </form>
+                          
                         </div>
                       </div>
                     </div>
+                                       
+                     
                 </main>
             </div>      
         </div>
@@ -139,4 +150,4 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
     </body>
-//</html>
+</html>

@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\patientController;
+use App\Models\Patient;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\patientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ Route::get('/index', function () {
 Route::get('/creates', [PatientController::class, 'create'])->name('create');
 
 Route::get('/records', [PatientController::class, 'records'])->name('records');
+Route::post('/patients', [PatientController::class, 'store'])->name('store');
 
 Route::get('/baby', function () {
     return view('babies');
@@ -38,10 +40,6 @@ Route::get('/landing', function () {
 
 })->name('landing');
 
-Route::get('/account', function () {
-    return view('accounts');
-
-})->name('accounts');
 
 Route::get('/bills', function () {
     return view('checkout');
@@ -58,10 +56,10 @@ Route::get('/manage', function () {
 
 })->name('items');
 
-Route::get('/maertals', function () {
-    return view('maternal');
+// Route::get('/maertals', function () {
+//     return view('maternal');
 
-})->name('maternal');
+// })->name('maternal');
 
 Route::get('/child', function () {
     return view('child');
@@ -78,6 +76,32 @@ Route::get('/check-up', function () {
     return view('checkup');
 
 })->name('checkup');
+
+Route::get('/patients/{id}/edit', [PatientController::class, 'edit'])->name('edit');
+Route::put('/patients/{id}', [PatientController::class, 'update'])->name('patients.update');
+
+Route::get('/search', [PatientController::class, 'searchPatients'])->name('searchPatients');
+
+Route::get('/patients/{id}/delete', [PatientController::class, 'delete'])->name('delete');
+Route::delete('/patients/{id}', [PatientController::class, 'destroy'])->name('destroy');
+
+//diplay account 
+Route::get('/accounts', [PatientController::class, 'viewAccounts'])->name('accounts');
+
+
+Route::get('/patients/{id}/maternal', [PatientController::class, 'showMaternalRecord'])->name('maternal');
+Route::post('/patients/{id}/maternalrecord', [PatientController::class, 'storeMaternalRecord'])->name('storeMaternalRecord');
+
+// Show the edit form for maternal record
+Route::get('/patients/{id}/maternal/editmaternal', [PatientController::class, 'editMaternalRecord'])->name('editMaternalRecord');
+Route::put('/patients/{id}/updatematernal', [PatientController::class, 'updateMaternalRecord'])->name('updateMaternalRecord');
+
+Route::get('/patients/{id}/deleteMaternal', [PatientController::class, 'showDeleteConfirmation'])->name('showDeleteConfirmation');
+Route::delete('/patients/{id}/maternalrecord/{maternalRecordId}', [PatientController::class, 'deleteMaternalRecord'])->name('deleteMaternalRecord');
+// Route::get('/patients/{id}/maternalForm', [PatientController::class, 'showMaternalForm'])->name('maternalForm');
+
+
+
 // Route::get('/maternal/{id}', [PatientController::class, 'show'])->name('maternal');
 
 

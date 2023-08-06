@@ -9,15 +9,14 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('midlename');
-            $table->string('age');
+            $table->string('midlename')->nullable();
+            $table->integer('age');
             $table->string('birthday');
             $table->string('civilstatus');
             $table->string('contact');
@@ -25,10 +24,8 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    
+    public function down()
     {
         Schema::dropIfExists('patients');
     }

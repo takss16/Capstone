@@ -9,13 +9,24 @@ class Patient extends Model
 {
     use HasFactory;
 
-    public function patients()
-{
-    $patients = Patient::all();
+    protected $fillable = [
+        'firstname',
+        'lastname',
+        'midlename',
+        'age',
+        'birthday',
+        'civilstatus',
+        'contact',
+        'address',
+    ];
 
-    return view('records', compact('patients'));
-    return view('create', compact('creates'));
-}
-
+    public function account()
+    {
+        return $this->hasOne(Account::class);
+    }
+    public function maternalRecord()
+    {
+        return $this->hasOne(MaternalRecord::class, 'patient_id_maternal');
+    }
 }
 
