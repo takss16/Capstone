@@ -1,28 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-    <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Pabustan Birthing Clinic</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-      @include('navbar')
-      </div>
-      
-      <div id="layoutSidenav_content">
+<x-layout>
     <main class="mw-100 col-11">
-        <div class="container mt-5">
-            <div class="row">
-            <div>
-            <div>
+        <div class="container mt-3">
+        <div class="text-start mb-3">
             <a href="{{route('records')}}" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
             </div>
+            <div class="mt-3 text-center">
+            <h3>New Born Care Form</h3>
+            </div>
+            <hr>
+            <div class="text-end">
+            <a href="" class="btn btn-primary btn-block"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+
+             </div>
+           
+            <div clas
+        <h4>Parents Information</h4>
+        <div class="col-md-12 mt-2 text-center">
+            <div class="text-start">
+            <span class="fw-bold">Mother's Name:</span>  
+            </div>
+            <span class="fw-bold">{{ $patient->firstname }}</span> 
+            <span class="fw-bold">{{ $patient->midlename }}</span> 
+            <span class="fw-bold">{{ $patient->lastname }}</span> 
+            
+        </div>
+     
+       
+        
+        
+        @if ($patient->babies)
+        <div class="col-md-12 mt-2 text-center">
+        <div class="text-start">
+            <span class="fw-bold">Father's Name:</span>  
+            </div>
+            <span class="fw-bold">{{ $patient->babies->fatherFirstName }}</span> 
+            <span class="fw-bold">{{ $patient->babies->fatherMiddleName }}</span> 
+            <span class="fw-bold">{{ $patient->babies->fatherLastName }}</span> 
+        </div>    
+            <hr>
+            <h4>Baby's Information</h4>
+            <div class="col-md-12 mt-2 text-center mb-4">
+        <div class="text-start">
+            <span class="fw-bold">Babys's Name:</span>  
+            </div>
+            <span class="fw-bold">{{ $patient->babies->babyGivenName }}</span> 
+            <span class="fw-bold">{{ $patient->babies->babyMiddleName }}</span> 
+            <span class="fw-bold">{{ $patient->babies->babyLastName }}</span> 
+        </div> 
+
+        <hr>
+        <div class="row mb-2">
+            <div class="col">
+                <span class="fw-bold">Date of Birth:</span>  {{ $patient->babies->babyDOB }}
+            </div>
+            <div class="col">
+                <span class="fw-bold">Time of Birth:</span> {{ $patient->babies->babyTOB }}
+            </div>
+            <div class="col">
+                <span class="fw-bold">Age of Baby:</span>  {{ $patient->babies->babyAge }}
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col">
+                <span class="fw-bold">Permanent Address:</span>  {{ $patient->babies->babyAddress }}
+            </div>
+            <div class="col">
+                <span class="fw-bold">Gender:</span> {{ $patient->babies->babyGender }}
+            </div>
+            <div class="col">
+                <span class="fw-bold">nationality:</span>  {{ $patient->babies->babyNationality }}
+            </div>
+        </div>
+        <div class="col">
+                <span class="fw-bold">nationality:</span>  {{ $patient->babies->babyNationality }}
+            </div>
+
+            <div class="row g-3 mt-5 col-12 text-center ">
+           
+                <div class="col-md-6">
+                    <a href="" class="btn btn-danger">
+                        <i class="fa-regular fa-square-minus"></i> Delete
+                    </a>
+                </div>
+                <div class="col-md-6">
+                <a href="" target="_blank" class="btn btn-primary btn-block">
+                    <i class="fa-solid fa-print"></i> Print
+                </a>
+
+
+                </div>
+                                            
+           </div>
+
+        @else
+        <div class="row">
+            <div>
+            <form action="{{ route('storeBabyInformation', ['id' => $patient->id]) }}" method="POST">
+                @csrf
                                     <div class="text-center"><h3>Baby's Information</h3></div>
                                     <div class="bg-dark col-9 mt-5"></div>
 
@@ -67,26 +141,12 @@
                                             <label for="nationality" class="form-label">Nationality:</label>
                                             <input type="text" class="form-control" id="nationality" name="babyNationality" required>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="idcCode" class="form-label">IDC Code:</label>
-                                            <input type="text" class="form-control" id="idcCode" name="idcCode" required>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="clinicalImpression" class="form-label">Clinical Impression:</label>
-                                            <input type="text" class="form-control" id="clinicalImpression" name="clinicalImpression" required>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="dtae" class="form-label">DTAE:</label>
-                                            <input type="text" class="form-control" id="dtae" name="dtae" required>
-                                        </div>
+                                        
                                         <div class="col-md-4">
                                             <label for="phic" class="form-label">PHIC:</label>
                                             <input type="text" class="form-control" id="phic" name="phic" required>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="clinicNo" class="form-label">Clinic Number:</label>
-                                            <input type="text" class="form-control" id="clinicNo" name="clinicNo" required>
-                                        </div>
+                                     
                                         <h3>Father's Information</h3>
                                         <div class="col-md-4">
                                             <label for="fatherLastName" class="form-label">Last Name:</label>
@@ -105,34 +165,17 @@
                                                 <div class="col-md-2 mb-3">
                                                     <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-download"></i> Save</button>
                                                 </div>
-                                                <div class="col-md-2 mb-3">
-                                                    <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-pen-to-square"></i> Update</button>
-                                                </div>
-                                                <div class="col-md-2 mb-3">
-                                                    <button type="submit" class="btn btn-primary btn-block"><i class="fa-regular fa-square-minus"></i> Delete</button><br>
-                                                </div>
-                                                <div class="col-md-2 mb-3">
-                                                    <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-print"></i> Print</button><br>
-                                                </div>
+                                               
+        
                                             </div>
                                         </div>
                                     </div>
                                     
                                 </div>
             </div>
+            </form>
+
+        @endif
         </div>
     </main>
-</div>
-
-
-        </div>
-        </div>        
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="js/datatables-simple-demo.js"></script>
-    </body>
-</html>
+</x-layout>

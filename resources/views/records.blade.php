@@ -79,7 +79,8 @@
                             <div class="row mt-3">
                                 <div class="col">
                                     <div class="d-flex justify-content-between">
-                                    <a href="{{ route('maternal', ['id' => $patient->id]) }}" class="btn btn-primary">Maternal</a>                                        <a href="{{ route('child', $patient->id) }}" class="btn btn-primary">Child</a>
+                                    <a href="{{ route('maternal', ['id' => $patient->id]) }}" class="btn btn-primary">Maternal</a>         
+                                    <a href="{{ route('child', $patient->id) }}" class="btn btn-primary">Child</a>                             
                                         <a href="{{ route('checkup', $patient->id) }}" class="btn btn-primary">Checkup</a>
                                         <a href="{{ route('addmit', $patient->id) }}" class="btn btn-primary">Admission</a>
                                     </div>

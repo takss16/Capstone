@@ -10,6 +10,7 @@
     <div class="text-start">
             <a href="{{route('records')}}" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
             </div>
+           
     <div class="col-6 text-start mt-3">
             <span class="fw-bold">Patient ID:</span> {{ $patient->id }}
     </div>
@@ -161,9 +162,11 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <button type="submit" class="btn btn-primary btn-block">
-                    <i class="fa-solid fa-print"></i> Print
-                </button><br>
+            <a href="{{ route('printMaternalRecord', ['id' => $patient->id]) }}" target="_blank" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-print"></i> Print
+            </a>
+
+
             </div>
                                      
             </div>

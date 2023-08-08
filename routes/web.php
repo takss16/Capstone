@@ -98,6 +98,12 @@ Route::put('/patients/{id}/updatematernal', [PatientController::class, 'updateMa
 
 Route::get('/patients/{id}/deleteMaternal', [PatientController::class, 'showDeleteConfirmation'])->name('showDeleteConfirmation');
 Route::delete('/patients/{id}/maternalrecord/{maternalRecordId}', [PatientController::class, 'deleteMaternalRecord'])->name('deleteMaternalRecord');
+Route::get('/patients/{id}/maternal/print', [PatientController::class, 'printMaternalRecord'])->name('printMaternalRecord');
+
+
+Route::post('/patients/{id}/baby', [PatientController::class, 'storeBabyInformation'])->name('storeBabyInformation');
+// web.php
+Route::get('/patients/{id}/child', [PatientController::class, 'showChildForm'])->name('child');
 // Route::get('/patients/{id}/maternalForm', [PatientController::class, 'showMaternalForm'])->name('maternalForm');
 
 

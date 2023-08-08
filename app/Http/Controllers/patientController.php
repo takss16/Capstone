@@ -2,6 +2,7 @@
 
 
 namespace App\Http\Controllers;
+use App\Models\Baby;
 use App\Models\Patient;
 use Illuminate\Http\Request;
 use App\Models\MaternalRecord;
@@ -267,9 +268,53 @@ public function store(Request $request)
             }
         
 
+            public function printMaternalRecord($id)
+                {
+                    // $patient = Patient::findOrFail($id);
+                    $patient = Patient::with('maternalRecord')->findOrFail($id);
+
+                    // Load the print-maternal.blade.php view with the patient data
+                    return view('print-maternal', compact('patient'));
+                }
 
 
+                public function showChildForm($id)
+                {
+                    $patient = Patient::findOrFail($id);
+                    return view('child', ['patient' => $patient]);
+                    }
+                
 
+                    public function storeBabyInformation(Request $request, $id)
+                    {
+                        $patient = Patient::findOrFail($id);
+                    
+                        // Create a new baby record for the patient
+                        $baby = Baby::create([
+                            'patient_id_baby' => $patient->id,
+                            'babyLastName' => $request->input('babyLastName'),
+                            'babyGivenName' => $request->input('babyGivenName'),
+                            'babyMiddleName' => $request->input('babyMiddleName'),
+                            'babyAddress' => $request->input('babyAddress'),
+                            'babyDOB' => $request->input('babyDOB'),
+                            'babyTOB' => $request->input('babyTOB'),
+                            'babyAge' => $request->input('babyAge'),
+                            'babyGender' => $request->input('babyGender'),
+                            'babyNationality' => $request->input('babyNationality'),
+                            'phic' => $request->input('phic'),
+                            'fatherLastName' => $request->input('fatherLastName'),
+                            'fatherFirstName' => $request->input('fatherFirstName'),
+                            'fatherMiddleName' => $request->input('fatherMiddleName'),
+                            // Add other baby fields as needed
+                        ]);
+                    
+                        // Load the patient with the baby relationship
+               
+                    
+                        // Redirect back to the patient's child form after successful save
+                        return redirect()->route('child', ['id' => $patient->id])->with('success', 'Baby information added successfully!');
+                    }
+                    
 
 
 

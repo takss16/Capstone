@@ -11328,3 +11328,12 @@ input,textarea {
       overflow-y: visible;
   }
 } */
+@media print {
+  .no-print {
+      display: none;
+  }
+    body {
+    margin: 0;
+    padding: 0;
+  }
+}
