@@ -1,21 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-    <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Pabustan Birthing Clinic</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="{{Vite::asset('resources/css/styles.css')}}" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-      @include('navbar')
-      </div>
-      
-      <div id="layoutSidenav_content">
+<x-layout>
     <main class="mw-100 col-11">
         <div class="container mt-5">
             <div class="row">
@@ -46,7 +29,35 @@
                                           <div class="col-md-6">
                                             <label for="next-visit" class="form-label">Expected Date of Next Visit:</label>
                                             <input type="date" id="next-visit" name="next-visit" class="form-control"><br>
-                                          </div>              
+                                          </div>   
+                                          <div id="medicine-section">
+                                            <div class="col-12 medicine-record">
+                                              <hr>
+                                              <h4>Medicine Record</h4>
+                                              <div class="col-12">
+                                                <label for="medicine-name" class="form-label">Medicine Name:</label>
+                                                <input type="text" class="medicine-name form-control" name="medicine-name[]">
+                                              </div>
+                                              <div class="col-md-6">
+                                                <label for="medicine-dosage" class="form-label">Dosage:</label>
+                                                <input type="text" class="medicine-dosage form-control" name="medicine-dosage[]">
+                                              </div>
+                                              <div class="col-md-6">
+                                                <label for="medicine-frequency" class="form-label">Frequency:</label>
+                                                <input type="text" class="medicine-frequency form-control" name="medicine-frequency[]">
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <div class="col-12 mt-3">
+                                            <button type="button" id="add-medicine" class="btn btn-secondary">Add Medicine</button>
+                                          </div>
+
+                                          <!-- ...Other buttons... -->
+
+                                          <script>
+                                          
+                                          </script>           
                                           <div class="col-12">
                                                                       
                                             <div class="row justify-content-center">
@@ -74,17 +85,5 @@
                                   
         </div>
     </main>
-</div>
-
-
-        </div>
-        </div>        
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="js/datatables-simple-demo.js"></script>
-    </body>
-</html>
+    
+        </x-layout>

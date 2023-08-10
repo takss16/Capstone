@@ -9,7 +9,7 @@
             </div>
             <hr>
             <div class="text-end">
-            <a href="" class="btn btn-primary btn-block"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+            <a href="{{ route('editBaby', ['id' => $patient->id]) }}" class="btn btn-primary btn-block"><i class="fa-solid fa-pen-to-square"></i> Update</a>
 
              </div>
            
@@ -77,18 +77,16 @@
 
             <div class="row g-3 mt-5 col-12 text-center ">
            
-                <div class="col-md-6">
-                    <a href="" class="btn btn-danger">
-                        <i class="fa-regular fa-square-minus"></i> Delete
-                    </a>
-                </div>
-                <div class="col-md-6">
-                <a href="" target="_blank" class="btn btn-primary btn-block">
+            <div class="col-md-6">
+            <a href="{{ route('confirmDeleteBaby', ['id' => $patient->id, 'babyId' => $baby->id]) }}" class="btn btn-danger">Delete</a>
+            </div>
+            <div class="col-md-6">
+                <a href="{{ route('printBaby', ['id' => $patient->id, 'babyId' => $baby->id]) }}" class="btn btn-primary btn-block" target="_blank">
                     <i class="fa-solid fa-print"></i> Print
                 </a>
+            </div>
 
 
-                </div>
                                             
            </div>
 

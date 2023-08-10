@@ -281,8 +281,11 @@ public function store(Request $request)
                 public function showChildForm($id)
                 {
                     $patient = Patient::findOrFail($id);
-                    return view('child', ['patient' => $patient]);
-                    }
+                    $baby = Baby::where('patient_id_baby', $patient->id)->first();
+                
+                    return view('child', ['patient' => $patient, 'baby' => $baby]);
+                }
+                
                 
 
                     public function storeBabyInformation(Request $request, $id)
@@ -315,9 +318,90 @@ public function store(Request $request)
                         return redirect()->route('child', ['id' => $patient->id])->with('success', 'Baby information added successfully!');
                     }
                     
+                    public function editbaby($id)
+                    {
+                        // Find the patient and their associated maternal record
+                        $patient = Patient::findOrFail($id);
+                        $baby = Baby::where('patient_id_baby', $patient->id)->first();
+            
+                        // Return the view with the patient and maternal record data
+                        return view('edit-baby', compact('patient', 'baby'));
+                    }
+                   
+                    public function updateBaby(Request $request, $id)
+                    {
+                        // Validation for form fields
+                        $validatedData = $request->validate([
+                            'babyLastName' => 'required',
+                            'babyGivenName' => 'required',
+                            // Add more validation rules for other baby fields if needed
+                        ]);
+                    
+                        try {
+                            $patient = Patient::findOrFail($id);
+                    
+                            // Find the baby record
+                            $baby = Baby::where('patient_id_baby', $patient->id)->first();
+                    
+                            // Update the baby record attributes
+                            $baby->update([
+                                'babyLastName' => $validatedData['babyLastName'],
+                                'babyGivenName' => $validatedData['babyGivenName'],
+                                'babyMiddleName' => $request->input('babyMiddleName'),
+                                'babyAddress' => $request->input('babyAddress'),
+                                'babyDOB' => $request->input('babyDOB'),
+                                'babyTOB' => $request->input('babyTOB'),
+                                'babyAge' => $request->input('babyAge'),
+                                'babyGender' => $request->input('babyGender'),
+                                'babyNationality' => $request->input('babyNationality'),
+                                'phic' => $request->input('phic'),
+                                'fatherLastName' => $request->input('fatherLastName'),
+                                'fatherFirstName' => $request->input('fatherFirstName'),
+                                'fatherMiddleName' => $request->input('fatherMiddleName'),
+                                // Add other baby fields to update
+                            ]);
+                    
+                            return redirect()->route('child', ['id' => $patient->id])->with('success', 'Baby information updated successfully!');
+                        } catch (\Exception $e) {
+                            // If an error occurs, redirect back with an error message and dump the error for debugging
+                            dd($e->getMessage());
+                            return redirect()->back()->with('error', 'Failed to update baby information.');
+                        }
+                    }
 
+                    public function confirmDeleteBaby($id, $babyId)
+                    {
+                        $patient = Patient::findOrFail($id);
+                        $baby = Baby::where('patient_id_baby', $patient->id)->findOrFail($babyId);
+                    
+                        return view('delete-baby', compact('patient', 'baby'));
+                    }
+                    
+                    public function deleteBabyRecord($id, $babyId)
+                    {
+                        // Find the patient and baby record
+                        $patient = Patient::findOrFail($id);
+                        $baby = Baby::where('patient_id_baby', $patient->id)->findOrFail($babyId);
+                    
+                        // Delete the baby record
+                        $baby->delete();
+                    
+                        return redirect()->route('child', ['id' => $patient->id])->with('success', 'Baby record deleted successfully!');
+                    }
+                    public function printBaby($id, $babyId)
+                    {
+                        $patient = Patient::findOrFail($id);
+                        $baby = Baby::where('patient_id_baby', $patient->id)->findOrFail($babyId);
+                    
+                        return view('print-baby', compact('patient', 'baby'));
+                    }
+                    
+                    
 
-
+                    
+                    
+                    
+                    
 }
 
 

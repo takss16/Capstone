@@ -61,10 +61,10 @@ Route::get('/manage', function () {
 
 // })->name('maternal');
 
-Route::get('/child', function () {
-    return view('child');
+// Route::get('/child', function () {
+//     return view('child');
 
-})->name('child');
+// })->name('child');
 
 Route::get('/addmission', function () {
     return view('addmit');
@@ -105,11 +105,18 @@ Route::post('/patients/{id}/baby', [PatientController::class, 'storeBabyInformat
 // web.php
 Route::get('/patients/{id}/child', [PatientController::class, 'showChildForm'])->name('child');
 // Route::get('/patients/{id}/maternalForm', [PatientController::class, 'showMaternalForm'])->name('maternalForm');
+Route::get('/patients/{id}/child/editBaby', [PatientController::class, 'editbaby'])->name('editBaby');
+Route::put('/patients/{id}/updatebaby', [PatientController::class, 'updatebaby'])->name('updateBaby');
 
+// Route::get('/patients/{id}/deletebaby', [PatientController::class, 'showdeletebaby'])->name('showdeletebaby');
+// Route::get('/confirm-delete-baby/{id}/{babyId}', [PatientController::class, 'confirmDeleteBaby'])->name('confirmDeleteBaby');
 
+Route::get('/confirm-delete-baby/{id}/{babyId}', [PatientController::class, 'confirmDeleteBaby'])->name('confirmDeleteBaby');
+Route::delete('/delete-baby/{id}/{babyId}', [PatientController::class, 'deleteBabyRecord'])->name('deleteBabyRecord');
+
+Route::get('/patients/{id}/babies/{babyId}/print', [PatientController::class, 'printBaby'])->name('printBaby');
 
 // Route::get('/maternal/{id}', [PatientController::class, 'show'])->name('maternal');
-
 
 
 

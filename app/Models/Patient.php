@@ -32,5 +32,10 @@ class Patient extends Model
     {
         return $this->hasOne(Baby::class, 'patient_id_baby');
     }
+    public function patient()
+{
+    return $this->belongsTo(Patient::class, 'patient_id_maternal');
+}
+
 }
 

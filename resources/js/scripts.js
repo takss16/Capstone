@@ -104,3 +104,9 @@ function showSpouse() {
         printWindow.print();
     };
 }
+//add medicine
+document.getElementById("add-medicine").addEventListener("click", function () {
+  const medicineSection = document.getElementById("medicine-section");
+  const newMedicineRecord = document.querySelector(".medicine-record").cloneNode(true);
+  medicineSection.appendChild(newMedicineRecord);
+});
