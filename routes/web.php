@@ -66,16 +66,13 @@ Route::get('/manage', function () {
 
 // })->name('child');
 
-Route::get('/addmission', function () {
-    return view('addmit');
-
-})->name('addmit');
 
 
-Route::get('/check-up', function () {
-    return view('checkup');
 
-})->name('checkup');
+// Route::get('/check-up', function () {
+//     return view('checkup');
+
+// })->name('checkup');
 
 Route::get('/patients/{id}/edit', [PatientController::class, 'edit'])->name('edit');
 Route::put('/patients/{id}', [PatientController::class, 'update'])->name('patients.update');
@@ -118,6 +115,25 @@ Route::get('/patients/{id}/babies/{babyId}/print', [PatientController::class, 'p
 
 // Route::get('/maternal/{id}', [PatientController::class, 'show'])->name('maternal');
 
+Route::get('/patients/{id}/checkup', [PatientController::class, 'showCheckupForm'])->name('checkup');
+Route::post('/patients/{id}/store-checkup', [PatientController::class, 'storeCheckup'])->name('storeCheckup');
+
+// routes/web.php
+Route::post('/checkup/{id}/add-medicine',[PatientController::class, 'addMedicine'])->name('addMedicine');
+
+Route::post('/patients/{id}/checkup/{checkupId}/update', [PatientController::class, 'updateCheckup'])->name('updateCheckup');
+Route::get('/patients/{id}/medicine/{medicineId}/delete', [PatientController::class, 'deleteMedicine'])->name('deleteMedicine');
+
+Route::get('/patients/{id}/checkup/{checkupId}/print', [PatientController::class, 'ShowPrintCheckup'])->name('patient.printCheckup');
+
+Route::get('/patients/{id}/admission', [PatientController::class, 'showAdmissionForm'])->name('addmit');
+Route::post('/patients/{id}/admission', [PatientController::class, 'storeAdmission'])->name('storeAdmission');
+
+Route::get('/patients/{id}/edit-admission', [PatientController::class, 'editAdmissionForm'])->name('editAdmissionForm');
+Route::post('/patients/{id}/update-admission', [PatientController::class, 'updateAdmission'])->name('updateadmission');
+
+Route::delete('/patients/{id}/delete-admission', [PatientController::class, 'deleteAdmission'])->name('deleteAdmission');
+Route::get('/patients/{id}/print-admission', [PatientController::class, 'printAdmission'])->name('printAdmission');
 
 
 

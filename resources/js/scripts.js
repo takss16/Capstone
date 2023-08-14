@@ -104,9 +104,16 @@ function showSpouse() {
         printWindow.print();
     };
 }
+
+// $(document).ready(function() {
+//   $('#admission-date, #discharge-date').on('change', function() {
+//       var admissionDate = new Date($('#admission-date').val());
+//       var dischargeDate = new Date($('#discharge-date').val());
+      
+//       if (dischargeDate < admissionDate) {
+//           alert('Date of discharge cannot be before date of admission.');
+//           $('#discharge-date').val('');
+//       }
+//   });
+// });
 //add medicine
-document.getElementById("add-medicine").addEventListener("click", function () {
-  const medicineSection = document.getElementById("medicine-section");
-  const newMedicineRecord = document.querySelector(".medicine-record").cloneNode(true);
-  medicineSection.appendChild(newMedicineRecord);
-});

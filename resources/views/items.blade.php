@@ -21,13 +21,13 @@
                         <div class="container mt-5">
                         <div id="layoutSidenav_content">
                             <div class="container">
-                            <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                      <a class="nav-link active" data-bs-toggle="tab" href="#items">Items</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" data-bs-toggle="tab" href="#services">Services</a>
-                    </li>  
+                  <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                              <a class="nav-link active" data-bs-toggle="tab" href="#items">Items</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" data-bs-toggle="tab" href="#services">Services</a>
+                            </li>  
                   </ul>
                   <div class="container">
                     <div class="tab-content">
@@ -111,7 +111,7 @@
                             </div>
                             </div>
                         </div>
-                    </main>
+            </main>
           </div>
         
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

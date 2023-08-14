@@ -13,8 +13,9 @@
                     </div>
                 </div>
                 <hr>
+                <div class="text-center">
                 <h3>New Born Care Form</h3>
-            
+                </div>
             <hr>
             <div class="text-end">
          
@@ -78,7 +79,7 @@
             </div>
         </div>
         <div class="col">
-                <span class="fw-bold">nationality:</span>  {{ $patient->babies->babyNationality }}
+                <span class="fw-bold">PHIC:</span>  {{ $patient->babies->phic }}
             </div>
             <!-- Your content goes here -->
 

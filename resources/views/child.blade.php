@@ -8,10 +8,7 @@
             <h3>New Born Care Form</h3>
             </div>
             <hr>
-            <div class="text-end">
-            <a href="{{ route('editBaby', ['id' => $patient->id]) }}" class="btn btn-primary btn-block"><i class="fa-solid fa-pen-to-square"></i> Update</a>
-
-             </div>
+           
            
             <div clas
         <h4>Parents Information</h4>
@@ -29,6 +26,10 @@
         
         
         @if ($patient->babies)
+        <div class="text-end">
+            <a href="{{ route('editBaby', ['id' => $patient->id]) }}" class="btn btn-primary btn-block"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+
+             </div>
         <div class="col-md-12 mt-2 text-center">
         <div class="text-start">
             <span class="fw-bold">Father's Name:</span>  
