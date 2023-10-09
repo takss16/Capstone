@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('medicine_records', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('check_up_id')->constrained('check_ups');
+            $table->foreignId('check_up_id')
+                ->constrained('check_ups')
+                ->onDelete('cascade'); // Add this line for cascading delete
             $table->string('medicine_name');
             $table->string('dosage');
             $table->string('frequency');

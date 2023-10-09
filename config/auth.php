@@ -12,7 +12,7 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
-
+    
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
@@ -31,16 +31,25 @@ return [
     | users are actually retrieved out of your database or other storage
     | mechanisms used by this application to persist your user's data.
     |
-    | Supported: "session"
+    | Supported: "session", "token"
     |
     */
-
+    
     'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'session', // Use the 'eloquent' driver
+            'provider' => 'admin_users', // Use 'admin_users' provider
+        ],
+        'account' => [
+            'driver' => 'session',
+            'provider' => 'accounts',
+        ],
     ],
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -59,18 +68,20 @@ return [
     |
     */
 
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+   'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
     ],
-
+    'admin_users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\AdminUsers::class,
+    ],
+    'accounts' => [ // Define the 'accounts' provider
+        'driver' => 'eloquent',
+        'model' => App\Models\Account::class, // Replace with the correct model class for accounts
+    ],
+],
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords
@@ -94,8 +105,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_reset_tokens',
-            'expire' => 60,
-            'throttle' => 60,
+        
         ],
     ],
 

@@ -14,6 +14,13 @@ class CheckUp extends Model
         'visit_time',
         'reason',
         'next_visit',
+        'lmp',        // Add the new columns to the $fillable array
+        'aog',
+        'edc',
+        'bp',
+        'weight',
+        'fh',
+        'fht',
     ];
 
     // Define the relationship with the Patient model

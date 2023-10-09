@@ -18,28 +18,38 @@ class Patient extends Model
         'civilstatus',
         'contact',
         'address',
+        'philhealth_beneficiary',
+    ];
+
+    protected $casts = [
+        'philhealth_beneficiary' => 'boolean',
     ];
 
     public function account()
     {
         return $this->hasOne(Account::class);
     }
-    public function maternalRecord()
+    public function maternalRecords()
     {
-        return $this->hasOne(MaternalRecord::class, 'patient_id_maternal');
+        return $this->hasMany(MaternalRecord::class, 'patient_id_maternal');
     }
     public function babies()
     {
-        return $this->hasOne(Baby::class, 'patient_id_baby');
+        return $this->hasMany(Baby::class, 'patient_id_baby');
     }
     public function checkups()
     {
-        return $this->belongsTo(CheckUp::class, 'patient_id_checkup');
+        return $this->hasMany(CheckUp::class, 'patient_id_checkup');
     }
     public function admissions()
     {
-        return $this->hasMany(Admission::class);
+        return $this->hasMany(Admission::class, 'patient_id_addmit');
     }
+    public function bills()
+    {
+        return $this->hasMany(Bill::class);
+    }
+    
 
 }
 

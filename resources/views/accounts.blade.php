@@ -8,7 +8,7 @@
         <meta name="author" content="" />
         <title>Pabustan Birthing Clinic</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="{{Vite::asset('resources/css/styles.css')}}" rel="stylesheet" />
+        <link href="{{asset('css/styles.css')}}" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     @include('navbar')
@@ -53,7 +53,10 @@
                                                     <td>{{ optional($patient->account)->username }}</td>
                                                     <td>{{ optional($patient->account)->password }}</td>
                                                     <td>
-                                                    <button onclick="resetForm()" class="reset-button"><i class="fas fa-undo"></i> Reset</button>
+                                                    <form method="POST" action="{{ route('reset.account', ['id' => $patient->id]) }}">
+                                                        @csrf
+                                                        <button type="submit" class="reset-button"><i class="fas fa-undo"></i> Reset</button>
+                                                    </form>
                                                     </td>
                                                 </tr>
                                  @endforeach

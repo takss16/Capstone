@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('condition')->nullable();
             $table->string('gravidity')->nullable();
             $table->string('parity')->nullable();
+            $table->boolean('status')->default(true); // "true" might mean "active" in your context
             $table->timestamps();
 
             // Add the foreign key constraint to link maternal records to patients

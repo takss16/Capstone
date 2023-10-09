@@ -18,6 +18,15 @@ return new class extends Migration
             $table->time('visit_time');
             $table->text('reason');
             $table->date('next_visit')->nullable();
+            $table->date('lmp')->nullable();
+            $table->string('aog')->nullable();
+            $table->date('edc')->nullable();
+            $table->string('bp')->nullable();
+            $table->string('weight')->nullable();
+            $table->text('fh')->nullable();
+            $table->string('fht')->nullable();
+            $table->boolean('status')->default(true); // "true" might mean "active" in your context
+
             $table->timestamps();
         });
     }
