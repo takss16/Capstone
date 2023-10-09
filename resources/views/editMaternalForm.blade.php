@@ -1,22 +1,21 @@
 <x-layout>
     <main class="mw-100 col-11">
         <div class="container text-center col-md-12 ">  
-       
+        <div class="text-start">
+            <a href="{{route('maternal', ['id' => $patient->id]) }})}}" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+            </div>
             <div class="container text-center col-md-12">
-            <h2>Add Maternal Record for<b> {{ $patient->firstname }} {{ $patient->lastname }}</h2></b>
-
+            <h2>
+                Edit Maternal Record for<b> {{ $patient->firstname }} {{ $patient->lastname }}</h2></b>
+<hr>
             <form action="{{ route('updateMaternalRecord', ['id' => $patient->id]) }}" method="POST">
                 @csrf
                 @method('PUT') <!-- Use the PUT method for updating -->
 
                 <!-- Add form fields for maternal record -->
                 <!-- Populate the input fields with existing maternal record data -->
-                <div class="text-start">
-            <a href="{{route('maternal', ['id' => $patient->id]) }})}}" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
-            </div>
-                <div class="mb-5 text-center mt-3">
-                    <h3>Edit Maternal Record</h3> 
-                </div>
+         
+              
                                            
                 <div class="col-9 bg-dark"></div>
                                                     

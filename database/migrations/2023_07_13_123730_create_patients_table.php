@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('civilstatus');
             $table->string('contact');
             $table->string('address');
+            $table->boolean('philhealth_beneficiary');
+            $table->boolean('status')->default(true); // "true" might mean "active" in your context
             $table->timestamps();
         });
     }

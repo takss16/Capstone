@@ -36,7 +36,7 @@
                             </div>
                                 
                             </a>
-                            <div class="sb-sidenav-menu-heading">Interface</div>
+                            <!-- <div class="sb-sidenav-menu-heading">Interface</div> -->
 
                             <!-- <a href="{{ route('create') }}">Create</a>
                                 <div class="sb-nav-link-icon"><i class=""></i></div>
@@ -44,30 +44,27 @@
                             </a> -->
                             <a  class="nav-link" href="{{ route('create') }}">
                                 <div class="sb-nav-link-icon"><i class="fa fa-solid fa-user-plus"></i>
-                                Create
+                                New Patient Record
                                 </div>
                             </a>
                            
 
-                            <a  class="nav-link" href="{{ route('checkout') }}">
+                            <a  class="nav-link" href="{{ route('items.select_patient') }}">
                                 <div class="sb-nav-link-icon"><i class="fa fa-solid fa-cash-register"></i>
                                 Check out Bills
                                 </div>
                             </a>
+                            <div class="sb-sidenav-menu-heading">patients info</div>
+
+                            <a  class="nav-link" href="{{ route('records') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i>
+                                Patient Record
+                                </div>
+                            </a>
 
                             
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Records
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('records') }}">Mother</a>
-                                    <a class="nav-link" href="{{ route('babies') }}">Baby</a>
-                                </nav>
-                            </div>
-                            <div class="sb-sidenav-menu-heading">patients info</div>
+                 
+                            
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                                 Clinic Record
@@ -79,8 +76,9 @@
                                         Authentication
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a> -->
-                                    <a class="nav-link" href="{{ route('patients') }}">Patients</a>
+                                    <a class="nav-link" href="{{ route('referral') }}">Patients</a>
                                     <a class="nav-link" href="{{ route('accounts') }}">Accounts</a>
+                                    <a class="nav-link" href="{{ route('showAppointment') }}">Appointment</a>
                                     <!-- <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
                                             <a class="nav-link" href="login.html">Login</a>
@@ -102,17 +100,14 @@
                                 </nav>
                             </div>
                             <div class="sb-sidenav-menu-heading">Manage</div>
-                            <!-- <a class="nav-link"href="{{ route('checkout') }}>
-                                <div class="sb-nav-link-icon"><i class="fa-duotone fa-money-bill"></i></div>
-                                Check out Bills
-                            </a> -->
-                            <a class="nav-link" href="{{ route('items') }}">
+                          
+                            <a class="nav-link"  href="{{ route('items.create') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Manage Price
+                                Manage Billables
                             </a>
-                            <a class="nav-link" href="charts.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Charts
+                            <a class="nav-link" href="{{ route('packages.create') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-box-open"></i></div>
+                                Manage Packages
                             </a>
                         </div>
                     </div>
