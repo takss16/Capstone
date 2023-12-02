@@ -3,6 +3,7 @@
         <div class="container">
             <h1 class="text-left">Welcome, {{ $patient->firstname }} {{ $patient->lastname }}</h1>
 
+
             <div class="d-flex justify-content-center mt-3">
                 <div class="col-10 ">
                     <div class="card shadow-lg ">

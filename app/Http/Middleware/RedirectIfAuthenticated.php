@@ -20,9 +20,13 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+            if (Auth::guard($guard)->check()) { // ano kasi mga guard mo... anog yun web? alam ko kasu sa normal user lang sa appoitment master 
+                if($guard == 'admin') return redirect()->route('admin.index');
+                if($guard == 'account') return redirect()->route('account.patient.dashboard');
+                else return redirect()->route('appointment.user.info');
+                
             }
+
         }
 
         return $next($request);

@@ -3,12 +3,10 @@
     @if (session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    <!--<div class="text-end">-->
-    <!--<a href="{{ route('packages.create') }}" class="btn btn-primary">Add Package</a>-->
-    <!--</div>-->
-    <h2>Manage Billing</h2>
 
-    <form action="{{ route('items.store') }}" method="POST">
+    <h2>Manage Billables</h2>
+
+    <form action="{{ route('admin.items.store') }}" method="POST">
     @csrf
     <div class="row g-3">
                 <div class="mb-3 col-6">
@@ -41,7 +39,7 @@
              <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                              Bills
+                                Billables
                             </div>
                             <div class="card-body">
                             <table id="datatablesSimple">
@@ -78,7 +76,7 @@
                                     <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $item->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <form action="{{ route('items.destroy', ['item' => $item->id]) }}" method="POST">
+                                                <form action="{{ route('admin.items.destroy', ['item' => $item->id]) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="modal-header">
@@ -101,7 +99,7 @@
                                     <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $item->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <form action="{{ route('items.update', ['item' => $item->id]) }}" method="POST">
+                                                <form action="{{ route('admin.items.update', ['item' => $item->id]) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-header">

@@ -1,4 +1,4 @@
-<x-layout-appointment>
+<x-layout-print>
     <main class="mw-100 col-11 mt-5">
         <div class="d-flex justify-content-center mt-3">
             <div class="col-8 ">
@@ -26,7 +26,11 @@
                                     <div class="form-group">
                                         <label for="email">{{ __('E-Mail Address') }}</label>
                                         <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                                        @error('email') <!-- Change 'field_name' to 'email' here -->
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
+
                                     <div class="form-group">
                                         <label for="password">{{ __('Password') }}</label>
                                         <input id="password" type="password" class="form-control" name="password" required>
@@ -38,27 +42,34 @@
                                     </div>
 
                                     <div id="password-error" style="color: red;"></div>
-
                                     @push('scripts')
                                     <script>
-                                        var passwordInput = document.getElementById('password');
-                                        var passwordConfirmInput = document.getElementById('password-confirm');
-                                        var passwordError = document.getElementById('password-error');
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            const registrationForm = document.querySelector('form');
+                                            const passwordInput = document.getElementById('password');
+                                            const passwordConfirmInput = document.getElementById('password-confirm');
+                                            const passwordError = document.getElementById('password-error');
 
-                                        function validatePassword() {
-                                            if (passwordInput.value !== passwordConfirmInput.value) {
-                                                passwordError.textContent = 'Passwords do not match';
-                                            } else {
-                                                passwordError.textContent = '';
-                                            }
-                                        }
+                                            registrationForm.addEventListener('submit', function(event) {
+                                                let hasError = false;
 
-                                        passwordConfirmInput.addEventListener('input', validatePassword);
+                                                if (passwordInput.value !== passwordConfirmInput.value) {
+                                                    passwordError.textContent = 'Password and Confirm Password must match.';
+                                                    hasError = true;
+                                                } else if (passwordInput.value.length < 8) {
+                                                    passwordError.textContent = 'Password must be at least 8 characters.';
+                                                    hasError = true;
+                                                } else {
+                                                    passwordError.textContent = ''; // Clear the error message
+                                                }
+
+                                                if (hasError) {
+                                                    event.preventDefault(); // Prevent form submission
+                                                }
+                                            });
+                                        });
                                     </script>
                                     @endpush
-
-
-
                                     <div class="mb-5">
                                         <button type="submit" class="btn btn-primary">
                                             {{ __('Register') }}
@@ -72,4 +83,4 @@
             </div>
         </div>
     </main>
-</x-layout-appointment>
+</x-layout-print>

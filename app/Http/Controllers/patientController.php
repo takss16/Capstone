@@ -11,15 +11,19 @@ use App\Models\CheckUp;
 use App\Models\Patient;
 use App\Models\Admission;
 use App\Models\Frequency;
+use App\Models\ActivityLog;
 use App\Models\MedicineName;
 use Illuminate\Http\Request;
 use App\Models\MaternalRecord;
 use App\Models\MedicineRecord;
 use App\Models\DateTimeReasons;
+use Illuminate\Validation\Rule;
 use App\Models\AppointmentPatient;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 
 
 
@@ -34,57 +38,69 @@ class PatientController extends Controller
 
     public function showAppointment()
     {
-        $appointments = AppointmentPatient::with('dateTimeReasons')->get();
- 
-        // Now, $appointments contains all the appointment_patient records with their dateTimeReasons
-    
+        $appointments = AppointmentPatient::has('dateTimeReasons')->with('dateTimeReasons')->get();
+     
+        // Now, $appointments contains only the appointment_patient records with their dateTimeReasons
+  
         // You can return a view and pass the $appointments variable to it
         return view('allAppointment', ['appointments' => $appointments]);  
-      }
-      public function index()
-      {
-          // Calculate the start and end dates of the current week
-          $currentWeekStartDate = Carbon::now()->startOfWeek();
-          $currentWeekEndDate = Carbon::now()->endOfWeek();
-      
-          // Retrieve all AppointmentPatient records with DateTimeReasons for appointments within the current week
-          $appointments = AppointmentPatient::whereHas('dateTimeReasons', function ($query) use ($currentWeekStartDate, $currentWeekEndDate) {
-              $query->whereBetween('appointment_date', [$currentWeekStartDate, $currentWeekEndDate]);
-          })->with('dateTimeReasons')->get();
-      
-          // Retrieve bill data
-          $billsData = Bill::select('total_amount', 'created_at')->get();
+    }
+    
+    public function index()
+    {
+        // Calculate the start and end dates of the current week
+        $currentWeekStartDate = Carbon::now()->startOfWeek();
+        $currentWeekEndDate = Carbon::now()->endOfWeek();
+    
+        // Retrieve all AppointmentPatient records with DateTimeReasons for appointments within the current week
+        $appointments = AppointmentPatient::whereHas('dateTimeReasons', function ($query) use ($currentWeekStartDate, $currentWeekEndDate) {
+            $query->whereBetween('appointment_date', [$currentWeekStartDate, $currentWeekEndDate]);
+        })->with('dateTimeReasons')->get();
+    
+        // Retrieve bill data
+        $billsData = Bill::select('total_amount', 'created_at')->get();
+    
+        // Calculate the total count of AppointmentPatient records
+        $totalAppointments = AppointmentPatient::count();
+    
+        // Calculate the total bill amount for each month
+        $monthlyBillAmounts = Bill::selectRaw('SUM(total_amount) as total, MONTH(created_at) as month')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+    
+        // Retrieve the count of patients from the "patients" table
+        $patientCount = Patient::where('status', true)->count();
 
-          // Pass both data sets to the same view
-          return view('index', ['appointments' => $appointments, 'billsData' => $billsData]);
-      }
-      
 
+        $patientsWithTrueCheckup = Patient::whereHas('checkups', function ($query) {
+            $query->where('status', true);
+        })->count();
+    
+        // Calculate monthly counts
+        $monthlyCounts = Patient::selectRaw('MONTH(created_at) as month, COUNT(id) as count')
+        ->where('status', true) // Add this line to filter by status
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get();
 
+    
+        return view('index', [
+            'appointments' => $appointments,
+            'monthlyBillAmounts' => $monthlyBillAmounts,
+            'patientCount' => $patientCount,
+            'appointmentCount' => $totalAppointments,
+            'activePatient' => $patientsWithTrueCheckup,
+            'monthlyCounts' => $monthlyCounts,
+        ]);
+    }
+    
     public function create(Request $request)
     {
         $patients = Patient::where('status', true)->get();
 
         return view('create', ['patients' => $patients]);
     }
-
-
-    public function searchPatients(Request $request)
-    {
-        $query = $request->input('query');
-
-        // Perform the search query based on the user's input
-        $patients = Patient::where('firstname', 'like', '%' . $query . '%')
-            ->orWhere('lastname', 'like', '%' . $query . '%')
-            ->orWhere('midlename', 'like', '%' . $query . '%')
-            ->get();
-        // Check if the search result is empty
-        $isEmptyResult = $patients->isEmpty();
-
-        // Return the filtered data to the "records" view along with the flag
-        return view('records', compact('patients', 'isEmptyResult'));
-    }
-
 
     public function store(Request $request)
     {
@@ -95,9 +111,16 @@ class PatientController extends Controller
             'age' => 'required|integer',
             'birthday' => 'required',
             'civilstatus' => 'required',
-            'contact' => 'required',
+            'contact' => [
+                'required',
+                Rule::unique('patients')->where(function ($query) use ($request) {
+                    return $query->where('firstname', $request->input('firstname'))
+                                 ->where('lastname', $request->input('lastname'))
+                                 ->where('contact', $request->input('contact'));
+                }),
+            ],
             'address' => 'required',
-            'philhealth_beneficiary' => 'required|boolean', // Validate the philhealth_beneficiary field as required boolean
+            'philhealth_beneficiary' => 'required|boolean',
         ]);
     
         // Map the 'philhealth_beneficiary' input to 1 for 'Yes', and 0 for 'No'
@@ -122,8 +145,7 @@ class PatientController extends Controller
         if ($appointmentPatient) {
             // Delete the found appointment_patient record
             $appointmentPatient->delete();
-        }
-    
+        }   
         // Create an account for the patient
         $username = 'P' . str_pad($patient->id, 6, '0', STR_PAD_LEFT);
         $defaultPassword = 'password123'; // You can set any default password you prefer
@@ -134,23 +156,25 @@ class PatientController extends Controller
             'username' => $username,
             'password' => $hashedPassword,
         ]);
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Created patient', // Customize the action as needed
+            'patient_id' => $patient->id,
+        ]);
     
-        return redirect()->route('ViewRecord', ['id' => $patient->id])->with('success', 'Patient data and account created successfully!');
+        return redirect()->route('admin.ViewRecord', ['id' => encrypt($patient->id)])->with('success', 'Patient data and account created successfully!');
+
     }
     
-
-
-
-
-
-    public function edit($id)
+    public function edit($encryptedId)
     {
-
+        // Decrypt the encrypted ID to get the original ID
+        $id = decrypt($encryptedId);
+    
         $patient = Patient::findOrFail($id);
         // dd($patient);
         return view('edit_patient', ['patient' => $patient]);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -168,17 +192,23 @@ class PatientController extends Controller
         $patient = Patient::findOrFail($id);
         $patient->update($validatedData);
 
-        return redirect()->route('create', ['id' => $id])->with('success', 'Patient data updated successfully!');
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Update Record', // Customize the action as needed
+            'patient_id' => $patient->id,
+        ]);
+        return redirect()->route('admin.records', ['id' => $id])->with('success', 'Patient data updated successfully!');
     }
 
-    public function delete($id)
+    public function delete($encryptedId)
     {
-
+        // Decrypt the encrypted ID to get the original ID
+        $id = decrypt($encryptedId);
+    
         $patient = Patient::findOrFail($id);
         // dd($patient);
         return view('delete_patient', ['patient' => $patient]);
     }
-
     public function destroy($id)
     {
         $patient = Patient::findOrFail($id);
@@ -191,10 +221,14 @@ class PatientController extends Controller
         if ($patient->account) {
             $patient->account->delete();
         }
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Delete Record', // Customize the action as needed
+            'patient_id' => $patient->id,
+        ]);
 
-        return redirect()->route('create')->with('success', 'Patient and associated account "deleted" successfully!');
+        return redirect()->route('admin.records')->with('success', 'Patient and associated account "deleted" successfully!');
     }
-
 
     public function viewAccounts()
     {
@@ -205,25 +239,47 @@ class PatientController extends Controller
         return view('accounts', ['patientsWithAccounts' => $patientsWithAccounts]);
     }
 
-
     public function showMaternalRecord($id)
     {
+        // Decrypt the id
+        $id = decrypt($id);
+    
         $patient = Patient::findOrFail($id);
     
         // Retrieve the maternal record with true status (if it exists)
         $maternalRecord = $patient->maternalRecords()->where('status', true)->first();
     
+        // Retrieve maternal records with false status
+        $maternalRecordsFalse = $patient->maternalRecords()->where('status', false)->get();
+    
         // Retrieve the latest checkup record for the patient
         $latestCheckup = CheckUp::with('medicineRecords')->where('patient_id_checkup', $patient->id)->latest()->first();
     
-        return view('maternal', ['patient' => $patient, 'maternalRecord' => $maternalRecord, 'latestCheckup' => $latestCheckup]);
+        return view('maternal', [
+            'patient' => $patient,
+            'maternalRecord' => $maternalRecord,
+            'maternalRecordsFalse' => $maternalRecordsFalse,
+            'latestCheckup' => $latestCheckup
+        ]);
+    }
+    public function prevMaternalRecord($id)
+    {
+        // Decrypt the id
+        $id = decrypt($id);
+    
+        $patient = Patient::findOrFail($id);
+    
+    
+        // Retrieve maternal records with false status
+        $maternalRecord = $patient->maternalRecords()->where('status', false)->get();
+    
+
+        return view('prevMaternal', [
+            'patient' => $patient,
+            'maternalRecord' => $maternalRecord,
+        ]);
     }
     
-    
-
-
-
-
     public function storeMaternalRecord(Request $request, $id)
     {
         // Validation for form fields
@@ -259,12 +315,18 @@ class PatientController extends Controller
                 'parity' => $request->input('parity'),
                 'status' => true, // Set the 'status' field to true
             ]);
-
+            ActivityLog::create([
+                'user_id' => Auth::id(), // Assuming you have user authentication
+                'action' => 'Add Meternal For', // Customize the action as needed
+                'patient_id' => $patient->id,
+            ]);
+    
             // Now, retrieve maternal records with status set to true for this patient
-
+                 
 
             // Redirect back to the patient's maternal page after successful save
-            return redirect()->route('maternal', ['id' => $patient->id])->with('success', 'Maternal record added successfully!');
+            return redirect()->route('admin.maternal', ['id' => encrypt($patient->id)])->with('success', 'Maternal record added successfully!');
+
         } catch (\Exception $e) {
             // If an error occurs, dump the error message for debugging
             dd($e->getMessage());
@@ -274,6 +336,7 @@ class PatientController extends Controller
 
     public function editMaternalRecord($id)
     {
+        $id = decrypt($id);
         // Find the patient and their associated maternal record
         $patient = Patient::findOrFail($id);
         $maternalRecord = MaternalRecord::where('patient_id_maternal', $patient->id)->first();
@@ -323,10 +386,11 @@ class PatientController extends Controller
                 'parity' => $request->input('parity'),
                 'medical_history' => $validatedData['medical-history'],
             ]);
-
+  
             // Redirect back to the patient's maternal page after successful update
-            return redirect()->route('maternal', ['id' => $patient->id])->with('success', 'Maternal record updated successfully!');
-        } catch (\Exception $e) {
+            $encryptedPatientId = Crypt::encrypt($patient->id);
+
+            return redirect()->route('admin.maternal', ['id' => $encryptedPatientId])->with('success', 'Maternal record updated successfully!');        } catch (\Exception $e) {
             // If an error occurs, redirect back with an error message and dump the error for debugging
             dd($e->getMessage());
             return redirect()->back()->with('error', 'Failed to update maternal record.');
@@ -346,33 +410,65 @@ class PatientController extends Controller
         try {
             $maternalRecord = MaternalRecord::findOrFail($maternalRecordId);
             $maternalRecord->delete();
-
-            return redirect()->route('maternal', ['id' => $patientId])->with('success', 'Maternal record deleted successfully!');
+    
+            $encryptedPatientId = Crypt::encrypt($patientId);
+            ActivityLog::create([
+                'user_id' => Auth::id(), // Assuming you have user authentication
+                'action' => 'Delete Maternal Record For', // Corrected action text
+                'patient_id' => $patientId, // Use the correct variable $patientId
+            ]);
+            return redirect()->route('admin.maternal', ['id' => $encryptedPatientId])->with('success', 'Maternal record deleted successfully!');
         } catch (\Exception $e) {
+            Log::error($e->getMessage()); // Log the error message
             return redirect()->back()->with('error', 'Failed to delete maternal record.');
         }
     }
+    
 
 
     public function printMaternalRecord($id)
     {
-        // $patient = Patient::findOrFail($id);
-        $patient = Patient::with('maternalRecord')->findOrFail($id);
+        $id = decrypt($id);
+        $patient = Patient::findOrFail($id);
+        $maternalRecord = MaternalRecord::where('patient_id_maternal', $patient->id)->first();
 
-        // Load the print-maternal.blade.php view with the patient data
-        return view('print-maternal', compact('patient'));
+        // Return the view with the patient and maternal record data
+        return view('print-maternal', compact('patient', 'maternalRecord'));
     }
 
 
     public function showChildForm($id)
     {
+        $id = decrypt($id);
         $patient = Patient::findOrFail($id);
+        
+        // Retrieve the child record with a true status
         $baby = Baby::where('patient_id_baby', $patient->id)
             ->where('status', true)
             ->first();
-       
-        return view('child', ['patient' => $patient, 'baby' => $baby]);
+        
+        // Retrieve the child records with a false status
+        $babyFalse = Baby::where('patient_id_baby', $patient->id)
+            ->where('status', false)
+            ->get();
+    
+        return view('child', compact('patient', 'baby', 'babyFalse'));
     }
+    public function prevChildForm($id)
+    {
+        $id = decrypt($id);
+        $patient = Patient::findOrFail($id);
+        
+  
+        
+        // Retrieve the child records with a false status
+        $baby = Baby::where('patient_id_baby', $patient->id)
+            ->where('status', false)
+            ->get();
+
+        return view('prevChild', compact('patient', 'baby'));
+    }
+    
 
 
 
@@ -399,23 +495,32 @@ class PatientController extends Controller
             'status' => true, // Set the 'status' field to true
             // Add other baby fields as needed
         ]);
-
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Add Baby Record For', // Corrected action text
+            'patient_id' => $id, // Use the correct variable $patientId
+        ]);
         // Load the patient with the baby relationship
 
 
         // Redirect back to the patient's child form after successful save
-        return redirect()->route('child', ['id' => $patient->id])->with('success', 'Baby information added successfully!');
+        return redirect()->route('admin.child', ['id' => encrypt($patient->id)])->with('success', 'Baby information added successfully!');
+
     }
 
-    public function editbaby($id)
+    public function editbaby($encryptedId)
     {
-        // Find the patient and their associated maternal record
+        // Decrypt the encrypted ID to get the original ID
+        $id = decrypt($encryptedId);
+    
+        // Find the patient and their associated baby record
         $patient = Patient::findOrFail($id);
         $baby = Baby::where('patient_id_baby', $patient->id)->first();
-
-        // Return the view with the patient and maternal record data
+    
+        // Return the view with the patient and baby data
         return view('edit-baby', compact('patient', 'baby'));
     }
+    
 
     public function updateBaby(Request $request, $id)
     {
@@ -449,8 +554,14 @@ class PatientController extends Controller
                 'fatherMiddleName' => $request->input('fatherMiddleName'),
                 // Add other baby fields to update
             ]);
+            ActivityLog::create([
+                'user_id' => Auth::id(), // Assuming you have user authentication
+                'action' => 'Update Baby Record For', // Corrected action text
+                'patient_id' => $id, // Use the correct variable $patientId
+            ]);
+            $encryptedId = encrypt($id);
 
-            return redirect()->route('child', ['id' => $patient->id])->with('success', 'Baby information updated successfully!');
+            return redirect()->route('admin.child', ['id' => $encryptedId])->with('success', 'Baby information updated successfully!');
         } catch (\Exception $e) {
             // If an error occurs, redirect back with an error message and dump the error for debugging
             dd($e->getMessage());
@@ -460,11 +571,15 @@ class PatientController extends Controller
 
     public function confirmDeleteBaby($id, $babyId)
     {
-        $patient = Patient::findOrFail($id);
-        $baby = Baby::where('patient_id_baby', $patient->id)->findOrFail($babyId);
-
+        $decryptedId = decrypt($id);
+        $decryptedBabyId = decrypt($babyId);
+    
+        $patient = Patient::findOrFail($decryptedId);
+        $baby = Baby::where('patient_id_baby', $patient->id)->findOrFail($decryptedBabyId);
+    
         return view('delete-baby', compact('patient', 'baby'));
     }
+    
 
     public function deleteBabyRecord($id, $babyId)
     {
@@ -474,17 +589,27 @@ class PatientController extends Controller
 
         // Delete the baby record
         $baby->delete();
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Delete Baby Record For', // Corrected action text
+            'patient_id' => $id, // Use the correct variable $patientId
+        ]);
 
-        return redirect()->route('child', ['id' => $patient->id])->with('success', 'Baby record deleted successfully!');
+        return redirect()->route('admin.child', ['id' => encrypt($patient->id)])->with('success', 'Baby record deleted successfully!');
+
     }
 
     public function printBaby($id, $babyId)
     {
-        $patient = Patient::findOrFail($id);
-        $baby = Baby::where('patient_id_baby', $patient->id)->findOrFail($babyId);
-
+        $decryptedId = decrypt($id);
+        $decryptedBabyId = decrypt($babyId);
+    
+        $patient = Patient::findOrFail($decryptedId);
+        $baby = Baby::where('patient_id_baby', $patient->id)->findOrFail($decryptedBabyId);
+    
         return view('print-baby', compact('patient', 'baby'));
     }
+    
 
 
 
@@ -524,66 +649,95 @@ class PatientController extends Controller
         $checkup->status = true;
         $checkup->save();
 
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Add Checkup Record For', // Corrected action text
+            'patient_id' => $id, // Use the correct variable $patientId
+        ]);
 
 
         // Redirect back or to another page
-        return redirect()->route('checkupmed', ['id' => $id])->with('success', 'Checkup record saved successfully');
+        return redirect()->route('admin.checkupmed', ['id' => encrypt($id)])->with('success', 'Checkup record saved successfully');
+
     }
 
 
 
     public function showCheckupForm($id)
     {
-        $patient = Patient::findOrFail($id);
-
+        $decryptedId = decrypt($id);
+        $patient = Patient::findOrFail($decryptedId);
+    
         // Retrieve the latest checkup record with a true status
         $checkup = CheckUp::where('patient_id_checkup', $patient->id)
             ->where('status', true)
             ->latest()
             ->first();
-
+    
         return view('checkup', compact('patient', 'checkup'));
     }
+    
 
     public function showCheckup($id)
     {
-        $patient = Patient::findOrFail($id);
+        $decryptedId = decrypt($id); // Decrypt the $id
+        $patient = Patient::findOrFail($decryptedId); // Use the decrypted $id
         $checkup = CheckUp::with('medicineRecords')->where('patient_id_checkup', $patient->id)->latest()->first();
         $allcheckup = CheckUp::with('medicineRecords')->where('patient_id_checkup', $patient->id)->first();
         $medicineOptions = MedicineName::all();
         $frequencies = Frequency::all();
         $dosages = Dosage::all();
-
-
-
+    
         return view('checkup-med', compact('patient', 'checkup', 'medicineOptions', 'frequencies', 'dosages'));
     }
+    
     public function checkupHistory($id)
     {
+        // Decrypt the patient's ID
+        $decryptedId = decrypt($id);
+    
         // Fetch the patient's checkup history and associated medicine here
-        $patient = Patient::findOrFail($id);
+        $patient = Patient::findOrFail($decryptedId);
         $checkup = CheckUp::with('medicineRecords')->where('patient_id_checkup', $patient->id)->get();
-        // dd($checkup);
+    
         return view('checkup-history', compact('patient', 'checkup'));
     }
+    
 
 
     public function addMedicine(Request $request, $id)
-    {
-        // Validate the request data if needed
+{
+    // Validate the request data if needed
+    $checkup = CheckUp::findOrFail($id);
 
-        $checkup = CheckUp::findOrFail($id);
+    $existingMedicine = $checkup->medicineRecords()
+        ->where('medicine_name', $request->input('medicine_name'))
+        ->where('dosage', $request->input('dosage'))
+        ->where('frequency', $request->input('frequency'))
+        ->exists();
 
-        $medicine = new MedicineRecord([
-            'medicine_name' => $request->input('medicine_name'),
-            'dosage' => $request->input('dosage'),
-            'frequency' => $request->input('frequency'),
-        ]);
-
-        $checkup->medicineRecords()->save($medicine);
-
-        return redirect()->back()->with('success', 'Medicine record added successfully');
+    if ($existingMedicine) {
+        return redirect()->back()->with('error', 'Medicine record already exists for this checkup');
     }
+
+    $medicine = new MedicineRecord([
+        'medicine_name' => $request->input('medicine_name'),
+        'dosage' => $request->input('dosage'),
+        'frequency' => $request->input('frequency'),
+    ]);
+
+    $checkup->medicineRecords()->save($medicine);
+
+    $patientId = $checkup->patient->id;
+    ActivityLog::create([
+        'user_id' => Auth::id(),
+        'action' => 'Add Medicine For',
+        'patient_id' => $patientId,
+    ]);
+
+    return redirect()->back()->with('success', 'Medicine record added successfully');
+}
+
     public function updateCheckup(Request $request, $id, $checkupId)
     {
         $patient = Patient::findOrFail($id);
@@ -602,26 +756,64 @@ class PatientController extends Controller
         $checkup->fht = $request->input('fht');
         $checkup->fh = $request->input('fh');
         $checkup->save();
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Update Checkup Record For', // Corrected action text
+            'patient_id' => $id, // Use the correct variable $patientId
+        ]);
+       // Encrypt the patient ID
+$encryptedId = Crypt::encrypt($patient->id);
 
-        return redirect()->route('checkup-med', ['id' => $patient->id])->with('success', 'Checkup details updated successfully');
+// Redirect with the encrypted ID and success message
+return redirect()->route('admin.checkupmed', ['id' => $encryptedId])->with('success', 'Checkup details updated successfully');
     }
+
+
     public function deleteCheckup($checkupId)
-    {
-        $checkup = CheckUp::findOrFail($checkupId);
-        $checkup->delete();
+{
+    $checkup = CheckUp::find($checkupId);
 
-        return redirect()->back()->with('success', 'Checkup record deleted successfully');
+    if (!$checkup) {
+        // Check if the record is not found (it may have already been deleted)
+        return redirect()->route('admin.checkup')->with('success', 'Checkup record does not exist');
     }
 
+    $patientId = $checkup->patient->id; // Assuming you can access the patient ID
+
+    $checkup->delete();
+
+    ActivityLog::create([
+        'user_id' => Auth::id(),
+        'action' => 'Delete Checkup Record For',
+        'patient_id' => $patientId,
+    ]);
+
+    // Redirect to the 'checkup' route with the appropriate patient ID
+    return redirect()->route('admin.checkup', ['id' => encrypt($patientId)])->with('success', 'Checkup record deleted successfully');
+}
+
+    
+
+    
+
+    
     public function deleteMedicine($id, $medicineId)
     {
         $patient = Patient::findOrFail($id);
         $medicine = MedicineRecord::findOrFail($medicineId);
 
         $medicine->delete();
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Delete Medicine For', // Corrected action text
+            'patient_id' => $id, // Use the correct variable $patientId
+        ]);
+            // Encrypt the patient ID
+            $encryptedId = Crypt::encrypt($patient->id);
 
-        return redirect()->route('checkupmed', ['id' => $patient->id])->with('success', 'Medicine record deleted successfully');
-    }
+            // Redirect with the encrypted ID and success message
+            return redirect()->route('admin.checkupmed', ['id' => $encryptedId])->with('success', 'Medicine record deleted successfully');
+                }
 
 
     public function showPrintCheckup($id)
@@ -634,16 +826,36 @@ class PatientController extends Controller
 
     public function showAdmissionForm($id)
     {
+        $id = decrypt($id);
         $patient = Patient::findOrFail($id);
-
+    
         // Retrieve the admission record with a true status
         $admission = Admission::where('patient_id_addmit', $patient->id)
             ->where('status', true)
             ->first();
-
-        return view('addmit', compact('patient', 'admission'));
+    
+        // Retrieve the admission records with a false status
+        $admissionFalse = Admission::where('patient_id_addmit', $patient->id)
+            ->where('status', false)
+            ->get();
+    
+        return view('addmit', compact('patient', 'admission', 'admissionFalse'));
     }
 
+    public function prevAdmissionForm($id)
+    {
+        $id = decrypt($id);
+        $patient = Patient::findOrFail($id);
+
+        // Retrieve the admission records with a false status
+        $admission = Admission::where('patient_id_addmit', $patient->id)
+            ->where('status', false)
+            ->get();
+    
+        return view('prevAddmit', compact('patient', 'admission'));
+    }
+    
+    
     public function storeAdmission(Request $request, $id)
     {
         // Validate the form data
@@ -670,13 +882,20 @@ class PatientController extends Controller
 
         // Save the Admission record
         $admission->save();
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Add Admission Record For', // Corrected action text
+            'patient_id' => $id, // Use the correct variable $patientId
+        ]);
 
-        return redirect()->route('addmit', ['id' => $id])->with('success', 'Admission record saved successfully');
+        return redirect()->route('admin.addmit', ['id' => encrypt($id)])->with('success', 'Admission record saved successfully');
+
     }
 
 
     public function editAdmissionForm($id)
     {
+        $id = decrypt($id);
         $patient = Patient::findOrFail($id);
         $admission = Admission::where('patient_id_addmit', $patient->id)->first();
 
@@ -710,8 +929,14 @@ class PatientController extends Controller
                 'final_diagnosis' => $validatedData['final-diagnosis'],
                 // Add other admission fields to update
             ]);
+            ActivityLog::create([
+                'user_id' => Auth::id(), // Assuming you have user authentication
+                'action' => 'Update Admission Record For', // Corrected action text
+                'patient_id' => $id, // Use the correct variable $patientId
+            ]);
 
-            return redirect()->route('addmit', ['id' => $patient->id])->with('success', 'Admission information updated successfully!');
+            return redirect()->route('admin.addmit', ['id' => encrypt($patient->id)])->with('success', 'Admission information updated successfully!');
+
         } catch (\Exception $e) {
             // If an error occurs, redirect back with an error message and dump the error for debugging
             dd($e->getMessage());
@@ -728,8 +953,13 @@ class PatientController extends Controller
 
             // Delete the admission record
             $admission->delete();
+            ActivityLog::create([
+                'user_id' => Auth::id(), // Assuming you have user authentication
+                'action' => 'Delete Admission Record For', // Corrected action text
+                'patient_id' => $id, // Use the correct variable $patientId
+            ]);
 
-            return redirect()->route('addmit', ['id' => $patient->id])->with('success', 'Admission record deleted successfully.');
+            return redirect()->route('admin.addmit', ['id' => encrypt($patient->id)])->with('success', 'Admission record deleted successfully.');
         } catch (\Exception $e) {
             // Handle any errors here
             return redirect()->back()->with('error', 'Failed to delete admission record.');
@@ -752,7 +982,8 @@ class PatientController extends Controller
 
     public function Viewrecord($id)
     {
-
+        $id = decrypt($id);
+       
         $patient = Patient::findOrFail($id);
         // dd($patient);
         return view('record-view', ['patient' => $patient]);
@@ -773,6 +1004,7 @@ class PatientController extends Controller
     }
     public function dischargeAllRecords($patientId)
     {
+        $patientId = decrypt($patientId);
         // Find the patient by ID
         $patient = Patient::findOrFail($patientId);
     
@@ -784,17 +1016,18 @@ class PatientController extends Controller
         $patient->maternalRecords()->update(['status' => false]);
         $patient->babies()->update(['status' => false]);
         $patient->bills()->update(['status' => false]);
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Discharge Patient ', // Corrected action text
+            'patient_id' => $patientId, // Use the correct variable $patientId
+        ]);
     
         // Redirect to the printBillPreview route with the correct parameter name
-        return redirect()->route('BillPreview', ['patientId' => $patient->id])->with('success', 'All records discharged successfully!');
-    }
-    
-    public function showLoginApp()
-    {
-        
-        return view('frontend/appointment-login');
+        return redirect()->route('admin.BillPreview', ['patientId' => encrypt($patient->id)])->with('success', 'All records discharged successfully!');
 
     }
+    
+  
 
     public function resetAccount(Request $request, $id)
 {
@@ -805,7 +1038,7 @@ class PatientController extends Controller
     $newUsername = 'P' . str_pad($patient->id, 6, '0', STR_PAD_LEFT);
 
     // Generate a new password (you can use any method to generate a new password)
-    $newPassword = 'new_password_here';
+    $newPassword = 'password123';
 
     // Hash the new password
     $hashedPassword = Hash::make($newPassword);
@@ -815,10 +1048,73 @@ class PatientController extends Controller
         'username' => $newUsername,
         'password' => $hashedPassword,
     ]);
+    ActivityLog::create([
+        'user_id' => Auth::id(), // Assuming you have user authentication
+        'action' => 'Reset Portal Account', // Corrected action text
+        'patient_id' => $id, // Use the correct variable $patientId
+    ]);
 
     return redirect()->back()->with('success', 'Account reset successfully.');
 }
+public function adminLogout(Request $request)
+{
+    Auth::logout(); // Log the user out
+    $request->session()->flush(); // Clear the session
+
+    return redirect()->route('admin.login'); // Redirect to the login page
+}
+
+    public function showChangePasswordForm()
+    {
+        return view('adminChangePass');
+    }
+    public function changePassword(Request $request)
+    {
+        // Validate the form data
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|confirmed|min:8',
+        ]);
+    
+        // Get the currently authenticated account
+        $authenticatedAdmin = Auth::guard('admin')->user();
+    
+        // Check if the current password is correct
+        if (Hash::check($request->current_password, $authenticatedAdmin->password)) {
+            // Set the new password
+            $authenticatedAdmin->password = Hash::make($request->new_password);
+    
+            // Save the changes to the Admin
+            $authenticatedAdmin->save();
+    
+            return redirect()->route('admin.login')->with('success', 'Password changed successfully.');
+        } else {
+            return redirect()->route('admin.changePassForm')->with('error', 'Current password is incorrect.');
+        }
+    }
+    public function logs()
+    {
+        // Retrieve activity logs with user and patient information and order them by the latest first
+        $activityLogs = ActivityLog::with(['user', 'patient'])
+        ->whereNotNull('patient_id')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    
+    
+        // Separate logs with null patient_id
+        $logsWithNullPatientId = ActivityLog::with(['user', 'patient'])
+    ->whereNull('patient_id')
+    ->orderBy('created_at', 'desc')
+    ->get();
 
 
+
+        return view('Activitylogs', [
+            'activityLogs' => $activityLogs,
+            'logsWithNullPatientId' => $logsWithNullPatientId,
+        ]);
+    }
+    
+    
 
 }

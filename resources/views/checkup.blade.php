@@ -3,21 +3,28 @@
         <div class="container mt-3">
             <div class="row">
                 <div class="col-md-6 text-start mb-3">
-                    <a href="{{ route('ViewRecord', ['id' => $patient->id]) }}" class="btn btn-primary">
+                    <a href="{{ route('admin.ViewRecord', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
                         <i class="fa-solid fa-circle-chevron-left"></i> Back
                     </a>
                 </div>
                 <div class="col-md-6 text-end mb-3">
-                    <a href="{{ route('checkupHistory', ['id' => $patient->id]) }}" class="btn btn-primary">
+                    @if($checkup)
+                    <a href="{{ route('admin.checkupmed', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
+                        <i class="fa-solid fa-backward"></i> Previews
+                    </a>
+                    @endif
+
+                    <a href="{{ route('admin.checkupHistory', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
                         <i class="fa-solid fa-clock-rotate-left"></i> History
                     </a>
                 </div>
+
             </div>
             <div class="col-12 mt-3">
                 <div class="card shadow-lg col-12">
                     <div class="card-body">
 
-                        <form action="{{ route('storeCheckup', ['id' => $patient->id]) }}" method="POST">
+                        <form action="{{ route('admin.storeCheckup', ['id' => $patient->id]) }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -41,36 +48,37 @@
                                     <input type="text" id="bp" name="bp" pattern="\d+/\d+" placeholder="e.g., 120/80" required>
                                 </div>
                                 <div class="col-md-4">
-    <label for="lmp" class="form-label">Last Menstrual Period*</label>
-    @if (is_null($checkup))
-    <input type="date" id="lmp" name="lmp" class="form-control" required onchange="calculateEDCAndAOG()" max="<?php echo date('Y-m-d', strtotime('-1 day')); ?>">
-    @else
-    <input type="date" id="lmp" name="lmp" value="{{ $checkup->lmp }}" class="form-control" required onchange="calculateEDCAndValidate()" readonly>
-    @endif
-    <span id="lmp-error" class="text-danger"></span> <!-- This is where the error message should appear -->
-</div>
-
-                                    <div class="col-md-4">
-                                        <label for="aog" class="form-label">Age of Gestation</label>
-                                        <input type="text" id="aog" name="aog" class="form-control" readonly>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="edc" class="form-label">Estimated Due Date</label>
-                                        <input type="date" id="edc" name="edc" class="form-control" readonly>
-                                    </div>
+                                    <label for="lmp" class="form-label">Last Menstrual Period*</label>
+                                    @if (is_null($checkup))
+                                    <input type="date" id="lmp" name="lmp" class="form-control" required onchange="calculateEDCAndAOG()" max="<?php echo date('Y-m-d', strtotime('-1 day')); ?>">
+                                    @else
+                                    <input type="date" id="lmp" name="lmp" value="{{ $checkup->lmp }}" class="form-control" required onchange="calculateEDCAndValidate()" readonly>
+                                    @endif
+                                    <span id="lmp-error" class="text-danger"></span> <!-- This is where the error message should appear -->
+                                </div>
 
                                 <div class="col-md-4">
-                                    <label for="fht" class="form-label">Fetal Heart Tones(bpm)*</label>
-                                    <input type="text" id="fht" name="fht" class="form-control" required>
+                                    <label for="aog" class="form-label">Age of Gestation</label>
+                                    <input type="text" id="aog" name="aog" class="form-control" readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="fht" class="form-label">Weight(kg)</label>
-                                    <input type="text" id="weight" name="weight" class="form-control">
+                                    <label for="edc" class="form-label">Estimated Due Date</label>
+                                    <input type="date" id="edc" name="edc" class="form-control" readonly>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="fht" class="form-label">Fetal Heart Tones*</label>
+                                    <input type="text" id="fht" name="fht" class="form-control" required placeholder="e.g., 24bpm" pattern="\d{1,3}bpm">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="fh" class="form-label">Fundic Height(cm)*</label>
-                                    <input type="text" id="fh" name="fh" class="form-control" required>
+                                    <label for="weight" class="form-label">Weight</label>
+                                    <input type="text" id="weight" name="weight" class="form-control" placeholder="e.g., 23kg" pattern="\d{1,3}kg">
                                 </div>
+                                <div class="col-md-4">
+                                    <label for="fh" class="form-label">Fundic Height*</label>
+                                    <input type="text" id="fh" name="fh" class="form-control" required placeholder="e.g., 120cm" pattern="\d{1,3}cm">
+                                </div>
+
                             </div>
                             <hr>
 

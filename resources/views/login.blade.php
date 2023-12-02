@@ -21,7 +21,7 @@
                             
                                 <div class="card-header"><h3 class="text-center font-weight-light my-4">Admin Login</h3></div>
                                 <div class="card-body">
-                                    <form method="POST" action="{{ route('admin.login') }}">
+                                    <form method="POST" action="{{ route('admin.login.check') }}">
                                         @csrf
 
                                         <div class="form-floating mb-3">

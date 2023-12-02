@@ -4,9 +4,16 @@
             <div>
 
                 <div class="bg-dark col-9 mt-3"></div>
-                <a href="{{ route('ViewRecord', ['id' => $patient->id]) }}" class="btn btn-primary">
-                    <i class="fa-solid fa-circle-chevron-left"></i> Back
-                </a>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ route('admin.ViewRecord', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
+                        <i class="fa-solid fa-circle-chevron-left"></i> Back
+                    </a>
+                    @if (!$admissionFalse->isEmpty())
+                                    <a  href="{{ route('admin.prevAdmission', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
+                                        <i class="fa-solid fa-eye"></i> Previous Admission
+                                    </a>
+                        @endif
+                </div>
                 <div class="col-md-12 mt-2 ">
                     <div class="text-center mt-3">
                         <h3>Admission</h3>
@@ -96,14 +103,15 @@
                                         </button>
                                     </div>
                                     <div class="col-md-4">
-                                        <a href="{{ route('printAdmission', ['id' => $patient->id]) }}" class="btn btn-primary btn-block" target="_blank">
+                                        <a href="{{ route('admin.printAdmission', ['id' => $patient->id]) }}" class="btn btn-primary btn-block" target="_blank">
                                             <i class="fa-solid fa-print"></i> Print
                                         </a>
                                     </div>
                                     <div class="col-md-4">
-                                        <a href="{{ route('editAdmissionForm', ['id' => $patient->id]) }}" class="btn btn-primary text-end">
-                                            <i class="fa-solid fa-pen-to-square"></i> Update
-                                        </a>
+                                    <a href="{{ route('admin.editAdmissionForm', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary text-end">
+    <i class="fa-solid fa-pen-to-square"></i> Update
+</a>
+
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +135,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <form id="deleteForm" action="{{ route('deleteAdmission', ['id' => $patient->id]) }}" method="POST">
+                                    <form id="deleteForm" action="{{ route('admin.deleteAdmission', ['id' => $patient->id]) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -142,16 +150,16 @@
                     <div class="col-12">
                         <div class="card shadow-lg col-12">
                             <div class="card-body">
-                                <form action="{{ route('storeAdmission', ['id' => $patient->id]) }}" method="POST">
+                                <form action="{{ route('admin.storeAdmission', ['id' => $patient->id]) }}" method="POST">
                                     @csrf
                                     <div class="row g-3">
-                                   
 
 
-                                    <div class="col-md-6">
-                                        <label for="admission-date" class="form-label">Date of Admission</label>
-                                        <input type="date" id="admission-date" name="admission-date" class="form-control" value="{{ date('Y-m-d') }}"><br>
-                                    </div>
+
+                                        <div class="col-md-6">
+                                            <label for="admission-date" class="form-label">Date of Admission</label>
+                                            <input type="date" id="admission-date" name="admission-date" class="form-control" value="{{ date('Y-m-d') }}"><br>
+                                        </div>
 
                                         <div class="col-md-6">
                                             <label for="discharge-date" class="form-label">Date of Discharge</label>

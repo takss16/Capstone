@@ -49,13 +49,14 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <a href="{{ route('checkout', ['patientId' => $patient->id]) }}" class="btn btn-secondary">Back to Checkout</a>
+                <a href="{{ route('admin.checkout', ['patientId' => encrypt($patient->id)]) }}" class="btn btn-secondary">Back to Checkout</a>
             </div>
             <div class="col-md-6">
-            <form method="POST" action="{{ route('record.dischargeAll', ['id' => $patient->id]) }}">
-            @csrf
-            <button type="submit" class="btn btn-danger">Discharge All Records</button>
-        </form>
+                <form method="POST" action="{{ route('admin.record.dischargeAll', ['id' => encrypt($patient->id)]) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Discharge All Records</button>
+                </form>
+
             </div>
         </div>
 

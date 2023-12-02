@@ -21,7 +21,7 @@
                         <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" width="70" height="70">
                         <h5 class="font-weight-light my-4">Login</h5>
                     </div>
-                    <form method="POST" action="{{ route('login.appointment') }}">
+                    <form method="POST" action="{{ route('appointment.login.forapp') }}">
                     @csrf
                     <div class="card-body">
                         <div class="form-floating mb-3">

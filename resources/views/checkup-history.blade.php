@@ -2,7 +2,11 @@
     <main class="mw-100 col-11">
         <div class="container mt-3">
             <div class="text-start mb-3">
-                <!-- Back button or navigation -->
+            <div class="col-md-6 text-start mb-3">
+                    <a href="{{ route('admin.checkup', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
+                        <i class="fa-solid fa-circle-chevron-left"></i> Back
+                    </a>
+                </div>
             </div>
             <h2>Checkup History for {{ $patient->firstname }} {{ $patient->lastname }}</h2>
 

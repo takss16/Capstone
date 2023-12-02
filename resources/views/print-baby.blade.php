@@ -40,9 +40,9 @@
         <div class="text-start">
             <span class="fw-bold">Father's Name:</span>  
             </div>
-            <span class="fw-bold">{{ $patient->babies->fatherFirstName }}</span> 
-            <span class="fw-bold">{{ $patient->babies->fatherMiddleName }}</span> 
-            <span class="fw-bold">{{ $patient->babies->fatherLastName }}</span> 
+            <span class="fw-bold">{{ $baby->fatherFirstName }}</span> 
+            <span class="fw-bold">{{ $baby->fatherMiddleName }}</span> 
+            <span class="fw-bold">{{ $baby->fatherLastName }}</span> 
         </div>    
             <hr>
             <h4>Baby's Information</h4>
@@ -50,36 +50,36 @@
         <div class="text-start">
             <span class="fw-bold">Babys's Name:</span>  
             </div>
-            <span class="fw-bold">{{ $patient->babies->babyGivenName }}</span> 
-            <span class="fw-bold">{{ $patient->babies->babyMiddleName }}</span> 
-            <span class="fw-bold">{{ $patient->babies->babyLastName }}</span> 
+            <span class="fw-bold">{{ $baby->babyGivenName }}</span> 
+            <span class="fw-bold">{{ $baby->babyMiddleName }}</span> 
+            <span class="fw-bold">{{ $baby->babyLastName }}</span> 
         </div> 
 
         <hr>
         <div class="row mb-2">
             <div class="col">
-                <span class="fw-bold">Date of Birth:</span>  {{ $patient->babies->babyDOB }}
+                <span class="fw-bold">Date of Birth:</span>  {{ $baby->babyDOB }}
             </div>
             <div class="col">
-                <span class="fw-bold">Time of Birth:</span> {{ $patient->babies->babyTOB }}
+                <span class="fw-bold">Time of Birth:</span> {{ $baby->babyTOB }}
             </div>
             <div class="col">
-                <span class="fw-bold">Age of Baby:</span>  {{ $patient->babies->babyAge }}
+                <span class="fw-bold">Age of Baby:</span>  {{ $baby->babyAge }}
             </div>
         </div>
         <div class="row mb-2">
             <div class="col">
-                <span class="fw-bold">Permanent Address:</span>  {{ $patient->babies->babyAddress }}
+                <span class="fw-bold">Permanent Address:</span>  {{ $baby->babyAddress }}
             </div>
             <div class="col">
-                <span class="fw-bold">Gender:</span> {{ $patient->babies->babyGender }}
+                <span class="fw-bold">Gender:</span> {{ $baby->babyGender }}
             </div>
             <div class="col">
-                <span class="fw-bold">nationality:</span>  {{ $patient->babies->babyNationality }}
+                <span class="fw-bold">nationality:</span>  {{ $baby->babyNationality }}
             </div>
         </div>
         <div class="col">
-                <span class="fw-bold">PHIC:</span>  {{ $patient->babies->phic }}
+                <span class="fw-bold">PHIC:</span>  {{ $baby->phic }}
             </div>
             <!-- Your content goes here -->
 

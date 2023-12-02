@@ -15,9 +15,9 @@ class AdminController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        
         if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->intended('/index'); // Replace with your desired admin dashboard route
+
+            return redirect()->route('admin.index'); // Replace with your desired admin dashboard route
         }
         
         return back()->withErrors(['email' => 'Invalid credentials']);

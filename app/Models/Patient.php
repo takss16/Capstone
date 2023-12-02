@@ -49,7 +49,10 @@ class Patient extends Model
     {
         return $this->hasMany(Bill::class);
     }
-    
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class, 'patient_id');
+    }
 
 }
 

@@ -7,8 +7,10 @@ use App\Models\Item;
 use App\Models\Package;
 use App\Models\Patient;
 use App\Models\BillItem;
+use App\Models\ActivityLog;
 use App\Models\BillPackage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
@@ -26,10 +28,14 @@ class ItemController extends Controller
             'price' => $request->input('price'),
             'type' => $request->input('type'),
         ]);
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Store Item for Billables', // Corrected action text
+        ]);
 
         $item->save();
 
-        return redirect()->route('items.create')->with('success', 'Item added successfully.');
+        return redirect()->route('admin.items.create')->with('success', 'Item added successfully.');
     }
 
     public function edit($id)
@@ -49,15 +55,24 @@ class ItemController extends Controller
 
         $item->save();
 
-        return redirect()->route('items.create')->with('success', 'Item updated successfully.');
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Update Billable Item', // Corrected action text
+        ]);
+
+        return redirect()->route('admin.items.create')->with('success', 'Item updated successfully.');
     }
 
     public function destroy($id)
     {
         $item = Item::findOrFail($id);
         $item->delete();
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Delete Billable Item', // Corrected action text
+        ]);
 
-        return redirect()->route('items.create')->with('success', 'Item deleted successfully.');
+        return redirect()->route('admin.items.create')->with('success', 'Item deleted successfully.');
     }
 
 
@@ -74,15 +89,24 @@ class ItemController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
+            'description' => 'required', // Add validation for the description
             'items' => 'required|array', // Validate that at least one item is selected
         ]);
-
-        $package = Package::create(['name' => $validatedData['name']]);
-
+    
+        $package = Package::create([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'], // Save the description
+        ]);
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Added a Package Item', // Corrected action text
+        ]);
+    
         $package->items()->attach($validatedData['items']);
-
-        return redirect()->route('packages.create')->with('success', 'Package added successfully.');
+    
+        return redirect()->route('admin.packages.create')->with('success', 'Package added successfully.');
     }
+    
 
     public function updatePackage(Request $request, Package $package)
     {
@@ -93,15 +117,23 @@ class ItemController extends Controller
 
         $package->update(['name' => $validatedData['name']]);
         $package->items()->sync($validatedData['items']);
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Update Package ', // Corrected action text
+        ]);
 
-        return redirect()->route('packages.create')->with('success', 'Package updated successfully.');
+        return redirect()->route('admin.packages.create')->with('success', 'Package updated successfully.');
     }
 
     public function destroyPackage(Package $package)
     {
         $package->delete();
+        ActivityLog::create([
+            'user_id' => Auth::id(), // Assuming you have user authentication
+            'action' => 'Delete Package', // Corrected action text
+        ]);
 
-        return redirect()->route('packages.create')->with('success', 'Package deleted successfully.');
+        return redirect()->route('admin.packages.create')->with('success', 'Package deleted successfully.');
     }
 
 
@@ -114,11 +146,12 @@ class ItemController extends Controller
 
     public function checkout($patientId)
     {
+        $decryptedId = decrypt($patientId);
         // Retrieve the patient by ID
-        $patient = Patient::findOrFail($patientId);
+        $patient = Patient::findOrFail($decryptedId);
 
         // Find the patient's bill
-        $bill = Bill::where('patient_id', $patientId)
+        $bill = Bill::where('patient_id', $decryptedId)
             ->where('status', true)
             ->first();
             
@@ -159,6 +192,7 @@ class ItemController extends Controller
 
     public function bill(Request $request, $patientId)
     {
+        $patientId = decrypt($patientId);
         $bill = Bill::where('patient_id', $patientId)
             ->where('status', true)
             ->first();
@@ -244,6 +278,12 @@ class ItemController extends Controller
             BillPackage::where('bill_id', $bill->id)
                 ->whereNotIn('packages_id', $selectedPackageIds)
                 ->delete();
+                
+                ActivityLog::create([
+                    'user_id' => Auth::id(), // Assuming you have user authentication
+                    'action' => 'Modify Current Bill For', // Corrected action text
+                    'patient_id' => $patientId, // Use the correct variable $patientId
+                ]);
         } else {
             // Create a new Bill instance if no bill exists and set the status to true
             $bill = new Bill();
@@ -253,6 +293,12 @@ class ItemController extends Controller
             $bill->total_discount = $totalDiscount;
             $bill->status = true; // Set status to true
             $bill->save();
+
+            ActivityLog::create([
+                'user_id' => Auth::id(), // Assuming you have user authentication
+                'action' => 'Generate Bill For', // Corrected action text
+                'patient_id' => $patientId, // Use the correct variable $patientId
+            ]);
         }
 
 
@@ -309,6 +355,7 @@ class ItemController extends Controller
 
     public function BillPreview($patientId)
     {
+        $patientId = decrypt($patientId);
         // Retrieve the patient by ID
         $patient = Patient::findOrFail($patientId);
 
@@ -325,6 +372,7 @@ class ItemController extends Controller
     
     public function printBillPreview($patientId)
     {
+        $patientId = decrypt($patientId);
         // Retrieve the patient by ID
         $patient = Patient::findOrFail($patientId);
 

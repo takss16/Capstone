@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User; // Import the User model
 use Illuminate\Support\Str;
+use Validator;
 
 
 class RegistrationController extends Controller
@@ -21,28 +22,39 @@ class RegistrationController extends Controller
     public function register(Request $request)
     {
         // Validate user input
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-
+    
+        // Add a custom validation message for email uniqueness
+        $validator->after(function ($validator) use ($request) {
+            if (User::where('email', $request->input('email'))->exists()) {
+                $validator->errors()->add('email', 'The email address is already in use.');
+            }
+        });
+    
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+    
         // Generate a 4-digit OTP
         $otp = str_pad(mt_rand(1000, 9999), 4, '0', STR_PAD_LEFT);
-
+    
         // Send the OTP to the user's email
         $details = [
             'name' => $request->input('first_name') . ' ' . $request->input('last_name'),
             'title' => "Email Verification",
             'body' => 'Your verification code is: ' . $otp,
         ];
-
+    
         Mail::to($request->input('email'))->queue(new VerificationMail($details, 'emails.verification', 'Email Verification'));
-
+    
         // Save the OTP in the session for verification
         session(['otp' => $otp]);
-
+    
         // Store user data in the session
         session([
             'first_name' => $request->input('first_name'),
@@ -50,7 +62,7 @@ class RegistrationController extends Controller
             'email' => $request->input('email'),
             'password' => $request->input('password'),
         ]);
-
+    
         // Redirect to a page where the user can enter the OTP (you can create this page)
         return view('frontend/verify');
     }
@@ -84,7 +96,7 @@ class RegistrationController extends Controller
             session()->forget(['otp', 'first_name', 'last_name', 'email', 'password']);
     
             // Redirect to the login page or any other desired page
-            return redirect()->route('user.info')->with('success', 'You have successfully logged in.');
+            return redirect()->route('appointment.user.info')->with('success', 'You have successfully logged in.');
         } else {
             session()->flash('error', 'Invalid OTP. Please try again.');
             return view('frontend/verify');
@@ -99,7 +111,7 @@ class RegistrationController extends Controller
     // Check if user information exists in the session
     if (!session()->has('first_name') || !session()->has('last_name') || !session()->has('email')) {
         // If user information is missing, redirect to registration
-        return redirect()->route('register');
+        return redirect()->route('appointment.register');
     }
 
     // Generate a new 4-digit OTP
@@ -130,4 +142,13 @@ class RegistrationController extends Controller
     // Redirect back to the verification page
     return redirect()->route('verify')->with('success', 'OTP has been resent. Please check your email.');
 }
+
+public function appointmentLogout(Request $request)
+{
+    Auth::logout(); // Log the user out
+    $request->session()->flush(); // Clear the session
+
+    return redirect()->route('login.appointment'); // Redirect to the login page
+}
+
 }
