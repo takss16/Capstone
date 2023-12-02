@@ -2,9 +2,10 @@
     <main class="mw-100 col-11">
     <div class="card mb-4">
                 <div class="container">
-                    <h1>APPOINTMENTS</h1>
+                    
                     <div class="card-body">
-                        <table id="" class="table table-bordered">
+                    <h6>APPOINTMENTS</h6>
+                        <table id="datatablesSimple" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -32,7 +33,7 @@
                                         @endif
                                     </td>
                                     <td>                  
-                                        <a href="{{ route('appointment.info', ['id' => $appointment->id]) }}" class="btn btn-primary">View Details</a>
+                                        <a href="{{ route('admin.appointment.info', ['id' => $appointment->id]) }}" class="btn btn-primary">View Details</a>
                                     </td>
                                 </tr>
                                 @endforeach

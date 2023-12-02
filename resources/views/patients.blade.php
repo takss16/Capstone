@@ -33,7 +33,7 @@
                             <td>{{ $patient->lastname }}</td>
                             <td> {{ $patient->midlename }}</td>
                             <td>
-                                <a href="{{ route('refferalForm', ['id' => $patient->id]) }}" class="btn btn-primary" target="_blank">Get Referral Form</a>
+                                <a href="{{ route('admin.refferalForm', ['id' => $patient->id]) }}" class="btn btn-primary" target="_blank">Get Referral Form</a>
                             </td>
 
 

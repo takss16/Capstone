@@ -2,25 +2,34 @@
     <main class="mw-100 col-11">
         <div class="row">
             <div class="col-md-6 text-start mb-3">
-                <a href="{{ route('ViewRecord', ['id' => $patient->id]) }}" class="btn btn-primary">
+                <a href="{{ route('admin.ViewRecord', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
                     <i class="fa-solid fa-circle-chevron-left"></i> Back
                 </a>
             </div>
             <div class="col-md-6 text-end mb-3">
-                <a href="{{ route('checkupHistory', ['id' => $patient->id]) }}" class="btn btn-primary">
-                    <i class="fa-solid fa-clock-rotate-left"></i> History
-                </a>
+            <a href="{{ route('admin.checkupHistory', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
+                        <i class="fa-solid fa-clock-rotate-left"></i> History
+                    </a>
             </div>
         </div>
         <hr>
         <div class="container mt-3">
+        @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
             <div class="row">
                 <div class="col-md-4">
                     <div class="col-12">
                         <div class="card shadow-lg col-12">
                             <div class="card-body">
                                 <h2>Add Medicine</h2>
-                                <form action="{{ route('addMedicine', ['id' => $checkup->id]) }}" method="POST" class="mb-3">
+                                <form action="{{ route('admin.addMedicine', ['id' => $checkup->id]) }}" method="POST" class="mb-3">
                                     @csrf
                                     <div class="mb-3">
                                         <div class="input-group">
@@ -77,7 +86,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <h2>Add New Medicine Name</h2>
-                                    <form action="{{ route('addMedicineName') }}" method="POST">
+                                    <form action="{{ route('admin.addMedicineName') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="newMedicineName" class="form-label">New Medicine Name</label>
@@ -94,7 +103,7 @@
                                         @foreach ($medicineOptions as $medicineOption)
                                         <li class="list-group-item">
                                             {{ $medicineOption->name }}
-                                            <form action="{{ route('deleteMedicineName', ['id' => $medicineOption->id]) }}" method="POST" class="float-end">
+                                            <form action="{{ route('admin.deleteMedicineName', ['id' => $medicineOption->id]) }}" method="POST" class="float-end">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">Remove</button>
@@ -115,7 +124,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <!-- Form to add new dosages -->
-                                    <form action="{{ route('dosages.store') }}" method="POST">
+                                    <form action="{{ route('admin.dosages.store') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="newDosage" class="form-label">New Dosage</label>
@@ -130,7 +139,7 @@
                                         @foreach ($dosages as $dosage)
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             {{ $dosage->name }}
-                                            <form action="{{ route('dosages.destroy', ['dosage' => $dosage->id]) }}" method="POST">
+                                            <form action="{{ route('admin.dosages.destroy', ['dosage' => $dosage->id]) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -154,7 +163,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <!-- Here, you can include a form to add and delete frequencies -->
-                                    <form action="{{ route('frequencies.store') }}" method="POST">
+                                    <form action="{{ route('admin.frequencies.store') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="newFrequency" class="form-label">New Frequency</label>
@@ -168,7 +177,7 @@
                                         @foreach ($frequencies as $frequency)
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             {{ $frequency->name }}
-                                            <form action="{{ route('frequencies.destroy', ['id' => $frequency->id]) }}" method="POST">
+                                            <form action="{{ route('admin.frequencies.destroy', ['id' => $frequency->id]) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -222,7 +231,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <a href="{{ route('deleteMedicine', ['id' => $patient->id, 'medicineId' => $medicine->id]) }}" class="btn btn-danger">Delete</a>
+                                                                <a href="{{ route('admin.deleteMedicine', ['id' => $patient->id, 'medicineId' => $medicine->id]) }}" class="btn btn-danger">Delete</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -346,7 +355,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="text-center mt-3">
-                                <a href="{{ route('patient.printCheckup', ['id' => $patient->id, 'checkupId' => $checkup->id]) }}" target="_blank" class="btn btn-primary">
+                                <a href="{{ route('admin.patient.printCheckup', ['id' => $patient->id, 'checkupId' => $checkup->id]) }}" target="_blank" class="btn btn-primary">
                                     <i class="fa-solid fa-print"></i> Print
                                 </a>
                             </div>
@@ -375,7 +384,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form action="{{ route('deleteCheckup', ['checkupId' => $checkup->id]) }}" method="POST">
+                        <form action="{{ route('admin.deleteCheckup', ['checkupId' => $checkup->id]) }}" method="POST">
                             @csrf
                             @method('DELETE') <!-- Add this line -->
                             <button type="submit" class="btn btn-danger">Delete</button>
@@ -399,7 +408,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('updateCheckup', ['id' => $patient->id, 'checkupId' => $checkup->id]) }}" method="POST">
+                        <form action="{{ route('admin.updateCheckup', ['id' => $patient->id, 'checkupId' => $checkup->id]) }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6">
@@ -420,32 +429,37 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="bp" class="form-label">Blood Pressure:</label>
-                                    <input type="text" id="bp" name="bp" value="{{ $checkup->bp }}" class="form-control">
+                                    <input type="text" id="bp" name="bp" value="{{ $checkup->bp }}" pattern="\d+/\d+" placeholder="e.g., 120/80" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="lmp" class="form-label">Last Menstrual Period:</label>
-                                    <input type="date" id="lmp" name="lmp" value="{{ $checkup->lmp }}" class="form-control" required onchange="calculateEDC()">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="aog" class="form-label">Age of Gestation:</label>
-                                    <input type="text" id="aog" name="aog" class="form-control" readonly>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="edc" class="form-label">Estimated Date of Confinement:</label>
-                                    <input type="date" id="edc" name="edc" class="form-control" readonly>
+                                    <label for="lmp" class="form-label">Last Menstrual Period*</label>
+                                    @if (is_null($checkup))
+                                    <input type="date" id="lmp" name="lmp" class="form-control" required onchange="calculateEDCAndAOG()" max="<?php echo date('Y-m-d', strtotime('-1 day')); ?>">
+                                    @else
+                                    <input type="date" id="lmp" name="lmp" value="{{ $checkup->lmp }}" class="form-control" required onchange="calculateEDCAndValidate()" readonly>
+                                    @endif
+                                    <span id="lmp-error" class="text-danger"></span> <!-- This is where the error message should appear -->
                                 </div>
 
                                 <div class="col-md-4">
+                                    <label for="aog" class="form-label">Age of Gestation</label>
+                                    <input type="text" id="aog" name="aog" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="edc" class="form-label">Estimated Due Date</label>
+                                    <input type="date" id="edc" name="edc" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
                                     <label for="fht" class="form-label">Fetal Heart Tones:</label>
-                                    <input type="text" id="fht" name="fht" value="{{ $checkup->fht }}" class="form-control">
+                                    <input type="text" id="fht" name="fht" value="{{ $checkup->fht }}" class="form-control" required  placeholder="e.g., 24bpm" pattern="\d{1,3}bpm">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="fht" class="form-label">Weight:</label>
-                                    <input type="text" id="weight" value="{{ $checkup->weight }}" name="weight" class="form-control">
+                                    <input type="text" id="weight" value="{{ $checkup->weight }}" name="weight" class="form-control"  placeholder="e.g., 23kg" pattern="\d{1,3}kg">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="fh" class="form-label">Fundic Height:</label>
-                                    <input type="text" id="fh" value="{{ $checkup->fh }}" name="fh" class="form-control">
+                                    <input type="text" id="fh" value="{{ $checkup->fh }}" name="fh" class="form-control" required placeholder="e.g., 120cm" pattern="\d{1,3}cm">
                                 </div>
                             </div>
 

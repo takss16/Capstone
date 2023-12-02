@@ -12,6 +12,12 @@ use App\Models\DateTimeReasons;
 
 class AppointmentController extends Controller
 {
+    public function showLoginApp()
+    {
+        
+        return view('frontend/appointment-login');
+
+    }
     // Google login
     public function redirectToGoogle()
     {
@@ -52,7 +58,7 @@ class AppointmentController extends Controller
 
 
         // Redirect the user to the desired page after login
-        return redirect()->route('user.info')->with('success', 'You have successfully logged in.');
+        return redirect()->route('appointment.user.info')->with('success', 'You have successfully logged in.');
     }
     // In your controller
     // In your controller
@@ -67,11 +73,10 @@ class AppointmentController extends Controller
         $appointmentPatient = AppointmentPatient::where('user_id', $user->id)->first();
     
         // Check if the user has associated dateTimeReasons
-        $hasDateTimeReasons = $appointmentPatient ? $appointmentPatient->dateTimeReasons()->exists() : false;
-  
-        if ($hasDateTimeReasons) {
+        $DateTimeReasons = $appointmentPatient ? $appointmentPatient->dateTimeReasons()->exists() : false;
+        if ($DateTimeReasons) {
             // Load a different view for users with dateTimeReasons
-            return view('frontend/success', [
+            return redirect()->route('appointment.combined.info', [
                 'user' => $user,
                 'firstName' => isset($nameParts[0]) ? $nameParts[0] : '',
                 'lastName' => isset($nameParts[1]) ? $nameParts[1] : '',
@@ -93,18 +98,17 @@ class AppointmentController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
+    
         // Use the "web" guard explicitly
         if (Auth::guard('web')->attempt($credentials)) {
-            
             // Authentication passed, user is logged in
-            return redirect()->route('user.info')->with('success', 'You have successfully logged in.');
+            return redirect()->route('appointment.user.info')->with('success', 'You have successfully logged in.');
         }
-
+    
         // Authentication failed
         return back()->withErrors(['email' => 'Invalid credentials']);
     }
-
+    
 
 
 
@@ -133,7 +137,7 @@ class AppointmentController extends Controller
         $appointmentPatient->save();
 
         // Optionally, you can redirect or return a response indicating success
-        return redirect()->route('step2')->with('success', 'Patient record created successfully.');
+        return redirect()->route('appointment.step2')->with('success', 'Patient record created successfully.');
     }
 
     public function update(Request $request, $id)
@@ -161,7 +165,7 @@ class AppointmentController extends Controller
         $appointmentPatient->save();
 
         // Optionally, you can redirect or return a response indicating success
-        return redirect()->route('step2')->with('success', 'Patient record updated successfully.');
+        return redirect()->route('appointment.step2')->with('success', 'Patient record updated successfully.');
     }
     public function step2()
     {
@@ -196,7 +200,7 @@ class AppointmentController extends Controller
         );
 
         // Redirect to a success page or any other appropriate page
-        return redirect()->route('combined.info')->with('success', 'Appointment information saved successfully.');
+        return redirect()->route('appointment.combined.info')->with('success', 'Appointment information saved successfully.');
     }
     public function combinedInfo()
     {
@@ -245,7 +249,7 @@ class AppointmentController extends Controller
         $appointment->delete();
     
         // Redirect to a suitable page, such as the appointments listing
-        return redirect()->route('index')->with('success', 'Appointment deleted successfully.');
+        return redirect()->route('admin.index')->with('success', 'Appointment deleted successfully.');
     }
     
 

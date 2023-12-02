@@ -4,16 +4,22 @@
             <div class="container  col-md-12">
                 <!-- Display patient details here -->
                 <div>
-                    <div class="text-start">
-                        <a href="{{ route('ViewRecord', ['id' => $patient->id]) }}" class="btn btn-primary">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ route('admin.ViewRecord', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
                             <i class="fa-solid fa-circle-chevron-left"></i> Back
                         </a>
+
+                        @if($maternalRecordsFalse->isNotEmpty())
+                        <a href="{{ route('admin.prevMaternal', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary">
+                        <i class="fa-solid fa-eye"></i> Previous Maternal Records</a>
+                        @endif
                     </div>
+
                     <!-- Add more patient details as needed -->
                 </div>
-                @if ($maternalRecord)    
-                <div class="mt-3">
-                    <h3>Maternal Record Details</h3>
+                @if ($maternalRecord)
+                <div class="mt-3 text-center">
+                    <h3>Maternal Record </h3>
                 </div>
 
                 <div class="col-12 mt-3">
@@ -106,19 +112,21 @@
 
                             <div class="row g-3 mt-3 text-center">
                                 <div class="col-3 mx-auto">
-                                    <a href="{{ route('showDeleteConfirmation', ['id' => $patient->id]) }}" class="btn btn-danger">
+                                    <a href="{{ route('admin.showDeleteConfirmation', ['id' => $patient->id]) }}" class="btn btn-danger">
                                         <i class="fa-regular fa-square-minus"></i> Delete
                                     </a>
                                 </div>
                                 <div class="col-3 mx-auto">
-                                    <a href="{{ route('printMaternalRecord', ['id' => $patient->id]) }}" target="_blank" class="btn btn-primary btn-block">
-                                        <i class="fa-solid fa-print"></i> Print
-                                    </a>
+                                <a href="{{ route('admin.printMaternalRecord', ['id' => encrypt($patient->id)]) }}" target="_blank" class="btn btn-primary btn-block">
+                                    <i class="fa-solid fa-print"></i> Print
+                                </a>
+
                                 </div>
                                 <div class="col-3 mx-auto">
-                                    <a href="{{ route('editMaternalRecord', ['id' => $patient->id]) }}" class="btn btn-primary btn-block">
-                                        <i class="fa-solid fa-pen-to-square"></i> Update
-                                    </a>
+                                <a href="{{ route('admin.editMaternalRecord', ['id' => encrypt($patient->id)]) }}" class="btn btn-primary btn-block">
+                                    <i class="fa-solid fa-pen-to-square"></i> Update
+                                </a>
+
                                 </div>
                             </div>
 
@@ -132,7 +140,7 @@
                     <div class="card shadow-lg col-12">
                         <div class="card-body">
 
-                            <form action="{{ route('storeMaternalRecord', ['id' => $patient->id]) }}" method="POST">
+                            <form action="{{ route('admin.storeMaternalRecord', ['id' => $patient->id]) }}" method="POST">
                                 @csrf
                                 <!-- Add form fields for maternal record -->
                                 <div class="mb-5 text-center mt-3">
@@ -143,9 +151,9 @@
 
                                 <div class="row g-3">
 
-                                <div class="col-md-4">
-                                      <label for="lmp" class="form-label">Last Menstrual Period*</label>
-                                      @if (is_null($latestCheckup))
+                                    <div class="col-md-4">
+                                        <label for="lmp" class="form-label">Last Menstrual Period*</label>
+                                        @if (is_null($latestCheckup))
                                         <input type="date" id="lmp" name="lmp" class="form-control" required onchange="calculateEDCAndValidate()" max="<?php echo date('Y-m-d', strtotime('-1 day')); ?>">
                                         @else
                                         <input type="date" id="lmp" name="lmp" value="{{$latestCheckup->lmp }}" class="form-control" required onchange="calculateEDCAndValidate()" readonly>
@@ -230,9 +238,9 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                    <label for="bp" class="form-label">Blood Pressure*</label>
-                                    <input type="text" id="bp" name="bp" pattern="\d+/\d+" placeholder="e.g., 120/80" required>
-                                </div>
+                                        <label for="bp" class="form-label">Blood Pressure*</label>
+                                        <input type="text" id="bp" name="bp" pattern="\d+/\d+" placeholder="e.g., 120/80" required>
+                                    </div>
 
                                     <div class="col-md-4">
                                         <label for="bow" class="form-label">BOW (Bag of Waters)*</label>
@@ -289,9 +297,9 @@
                                     <div class="col-12">
 
 
-                                    <div class="col-md-12 text-center mb-3">
-                                                    <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-download"></i> Save</button>
-                                                </div>
+                                        <div class="col-md-12 text-center mb-3">
+                                            <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-download"></i> Save</button>
+                                        </div>
                                     </div>
                             </form>
                         </div>

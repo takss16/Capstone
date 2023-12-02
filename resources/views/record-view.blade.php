@@ -2,7 +2,7 @@
     <main class="mw-100 col-11">
   
   
-        <a href="{{ route('records') }}" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+        <a href="{{ route('admin.records') }}" class="btn btn-primary"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
   
     <div class="col-md-12 mt-2">
         <div class="card shadow-lg border-0"> <!-- Add the border-0 class to remove the border -->
@@ -10,22 +10,24 @@
                 <div class="me-5 ms-5">
                     <section class="patient-action-icons mt-4 mb-4">
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('checkup', $patient->id) }}" class="text-decoration-none">
-                                <img src="{{ asset('img/checkup.png') }}" alt="Checkup" width="50">
-                                <p class="icon-label"><b>Checkup</b></p>
-                            </a>
-                            <a href="{{ route('maternal', ['id' => $patient->id]) }}" class="text-decoration-none">
+                        <a href="{{ route('admin.checkup', ['id' => encrypt($patient->id)]) }}" class="text-decoration-none">
+                            <img src="{{ asset('img/checkup.png') }}" alt="Checkup" width="50">
+                            <p class="icon-label"><b>Checkup</b></p>
+                        </a>
+
+                            <a href="{{ route('admin.maternal', ['id' => encrypt($patient->id)]) }}" class="text-decoration-none">
                                 <img src="{{ asset('img/maternal.png') }}" alt="Maternal" width="50">
                                 <p class="icon-label"><b>Maternal</b></p>
                             </a>
-                            <a href="{{ route('addmit', $patient->id) }}" class="text-decoration-none">
+                            <a href="{{ route('admin.addmit', encrypt($patient->id)) }}" class="text-decoration-none">
                                 <img src="{{ asset('img/admit.png') }}" alt="Admission" width="50">
                                 <p class="icon-label"><b>Admission</b></p>
                             </a>
-                            <a href="{{ route('child', $patient->id) }}" class="text-decoration-none">
+                            <a href="{{ route('admin.child', ['id' => encrypt($patient->id)]) }}" class="text-decoration-none">
                                 <img src="{{ asset('img/child.png') }}" alt="Birth" width="50">
                                 <p class="icon-label"><b>Birth</b></p>
                             </a>
+
                         </div>
                     </section>
                 </div>

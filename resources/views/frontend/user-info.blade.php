@@ -12,7 +12,7 @@
                                     @endif
 
                                     @if ($appointmentPatient)
-                                    <form method="POST" action="{{ route('appointment-patient.update', $appointmentPatient->id) }}">
+                                    <form method="POST" action="{{ route('appointment.patient.update', $appointmentPatient->id) }}">
                                             @csrf
                                             @method('PUT') <!-- Use the PUT method for updating -->
                                             <input type="hidden" name="user_id" value="{{ $user->id }}">
@@ -50,7 +50,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <label for="contact" class="form-label">Contact</label>
-                                            <input type="text" class="form-control" id="contact" value="{{ $appointmentPatient->contact }}" name="contact" required>
+                                            <input type="number" class="form-control" id="contact" value="{{ $appointmentPatient->contact }}" name="contact" required minlength="11" maxlength="11">
                                         </div>
                                         <div class="col-md-4">
                                             <label for="address" class="form-label">Address</label>
@@ -71,7 +71,7 @@
                                     </div>  
                                     </form>                                 
                                     @else
-                                    <form method="POST" action="{{ route('appointment-patient.store') }}">
+                                    <form method="POST" action="{{ route('appointment.appointment-patient.store') }}">
                                         @csrf
                                         <div class="row g-3">
                                             <div class="col-md-4">
@@ -88,14 +88,16 @@
                                             </div>
                                         </div>
                                         <div class="row g-3">
-                                            <div class="col-md-4">
-                                                <label for="birthday" class="form-label">Birthday</label>
-                                                <input type="date" class="form-control" id="birthday" name="birthday" required onchange="calculateAge()">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="age" class="form-label">Age</label>
-                                                <input type="number" class="form-control" id="age" name="age" readonly>
-                                            </div>
+                                <div class="col-md-4">
+                                    <label for="birthday" class="form-label">Birthday</label>
+                                    <input type="date" class="form-control" id="birthday" name="birthday" required onchange="calculateAge()">
+                                    <div id="error-message" style="color: red;"></div>
+                                </div>
+                             
+                                <div class="col-md-4">
+                                    <label for="age" class="form-label">Age</label>
+                                    <input type="number" class="form-control" id="age" name="age" readonly>
+                                </div>
                                             <div class="col-md-4">
                                                 <label for="civilStatus" class="form-label">Civil Status</label>
                                                 <select class="form-select" id="civilStatus" name="civil_status" required onchange="showSpouse()" required>
@@ -107,8 +109,9 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="contact" class="form-label">Contact</label>
-                                                <input type="text" class="form-control" id="contact" name="contact" required>
+                                                <input type="number" class="form-control" id="contact" name="contact" required minlength="11" maxlength="11">
                                             </div>
+
                                             <div class="col-md-4">
                                                 <label for="address" class="form-label">Address</label>
                                                 <input type="text" class="form-control" id="address" name="address" oninput="convertToUppercase(this)" required>

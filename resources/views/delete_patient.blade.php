@@ -1,16 +1,8 @@
-<!-- @push('styles')
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
-    If ever mag dagdag ka ng css at js file na specific file like gusto mo lang eto lang lalagyan mo 
-@endpush -->
+
 <x-layout>
     <main class="mw-100 col-11">
         <div class="container text-center col-md-12 ">  
-        <!-- <form action="{{ route('destroy', ['id' => $patient->id]) }}" method="POST">
-        @csrf
-        @method('DELETE') -->
-            
-            <!-- Add form fields for the patient's information -->
-            <!-- For example: -->
+
             <div class="container text-center col-md-12">
                             <div class="h1">Patient Record</div>
                             <div class="row">
@@ -59,11 +51,11 @@
                                     </div>
                                     <div class="col-md-12 mt-5">
                                         <p>Are you sure you want to delete this patient?</p>
-                                        <form action="{{ route('destroy', ['id' => $patient->id]) }}" method="POST">
+                                        <form action="{{ route('admin.destroy', ['id' => $patient->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this patient?')">Delete</button>
-                                            <a href="{{ route('create') }}" class="btn btn-secondary">Cancel</a>
+                                            <a href="{{ route('admin.records') }}" class="btn btn-secondary">Cancel</a>
                                         </form>
                                     </div>
                             </div>

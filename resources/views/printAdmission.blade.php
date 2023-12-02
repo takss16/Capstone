@@ -18,7 +18,7 @@
                 </div>
                 <hr>
                 <div class="text-center">
-                <h3>New Born Care Form</h3>
+                <h3>Admission Form</h3>
                 </div>   
                       <hr>
                       <div class="col-md-4 mt-4">

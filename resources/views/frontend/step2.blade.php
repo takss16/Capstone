@@ -41,7 +41,7 @@
                                     </div>
                                 </section>
                                 <hr>
-                                <form method="POST" action="{{ route('appointment-patient.step2.store') }}">
+                                <form method="POST" action="{{ route('appointment.patient.step2.store') }}">
                                   @csrf
                                   <div class="row">
                                         <div class="col-md-6">
@@ -53,13 +53,16 @@
                                             <label for="appointment_time">Appointment Time (7 AM to 5 PM)</label>
                                             <input type="time" name="appointment_time" id="appointment_time" class="form-control" required>
                                             <small id="time_error" class="text-danger"></small>
+                                            <small id="time_error1" class="text-danger"></small>
                                         </div>
                                     </div>
                                 <div class="form-group">
                                     <label for="appointment_reason">Appointment Reason</label>
                                     <textarea name="appointment_reason" class="form-control"></textarea>
                                 </div>
+                                <div class="mb-5">
                                 <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
                                 </form>
                             </div>
                         </div>

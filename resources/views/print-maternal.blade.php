@@ -51,83 +51,83 @@
                     <div class="row mt-2">
                         <div class="col-md-4 mt-2">
                             <span class="fw-bold">Last Menstrual Period:   </span> 
-                            {{ $patient->maternalRecord->lmp }}
+                            {{ $maternalRecord->lmp }}
                         </div>
                         <div class="col-md-4 mt-2">
                             <span class="fw-bold">Age of Gestation:</span> 
-                            {{ $patient->maternalRecord->aog }}
+                            {{ $maternalRecord->aog }}
                         </div>
                         <div class="col-md-4 mt-2">
                             <span class="fw-bold">Estimated Date Confinement:</span>
-                             {{ $patient->maternalRecord->edc }}
+                             {{ $maternalRecord->edc }}
                         </div>
 
                         <div class="col-md-4 mt-2">
                        <span class="fw-bold">Fetal Heart Tones:</span>
-                       {{ $patient->maternalRecord->fht }}
+                       {{ $maternalRecord->fht }}
                        
                        </div>
        
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Presentation:</span>
-                       {{ $patient->maternalRecord->pres }}
+                       {{ $maternalRecord->pres }}
                    
                        </div>
        
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Station:</span>
-                       {{ $patient->maternalRecord->st }}
+                       {{ $maternalRecord->st }}
                    
                        </div>
        
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Effacement:</span>
-                       {{ $patient->maternalRecord->effacement }}
+                       {{ $maternalRecord->effacement }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Cervical Dilatation:</span>
-                       {{ $patient->maternalRecord->cervical_dilatation }}
+                       {{ $maternalRecord->cervical_dilatation }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Blood Pressure:</span>
-                       {{ $patient->maternalRecord->bp }}
+                       {{ $maternalRecord->bp }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Bag of Waters:</span>
-                       {{ $patient->maternalRecord->bow }}
+                       {{ $maternalRecord->bow }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Color:</span>
-                       {{ $patient->maternalRecord->color }}
+                       {{ $maternalRecord->color }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Time of Rupture:</span>
-                       {{ $patient->maternalRecord->time_rupture }}
+                       {{ $maternalRecord->time_rupture }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Condition of Labor:</span>
-                       {{ $patient->maternalRecord->condition }}
+                       {{ $maternalRecord->condition }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
-                       <span class="fw-bold">Gravidity:</span>{{ $patient->maternalRecord->gravidity }}
+                       <span class="fw-bold">Gravidity:</span>{{ $maternalRecord->gravidity }}
                    
                        </div>
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Parity:</span>
-                       {{ $patient->maternalRecord->parity }}
+                       {{ $maternalRecord->parity }}
                    
                        </div>
 
                        <div class="col-md-4 mt-2">
                        <span class="fw-bold">Medical History:</span>
-                       {{ $patient->maternalRecord->medical_history }}
+                       {{ $maternalRecord->medical_history }}
                    
                        </div>
                     </div>

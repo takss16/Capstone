@@ -199,21 +199,52 @@ document.addEventListener("DOMContentLoaded", function() {
 // Sample list of medicine names (you can replace this with data from your database)
 
 
+let timeoutId;
+
 function calculateAge() {
-    // Get the selected date from the birthday input field
-    const birthdayInput = document.getElementById('birthday');
-    const selectedDate = new Date(birthdayInput.value);
+    clearTimeout(timeoutId);
 
-    // Calculate the current date
-    const currentDate = new Date();
+    timeoutId = setTimeout(function() {
+        // Get the selected date from the birthday input field
+        const birthdayInput = document.getElementById('birthday');
 
-    // Calculate the age
-    const age = currentDate.getFullYear() - selectedDate.getFullYear();
+        // Check if the birthday input has a valid value
+        if (!birthdayInput.value) {
+            return;
+        }
 
-    // Fill in the age input field
-    const ageInput = document.getElementById('age');
-    ageInput.value = age;
+        const selectedDate = new Date(birthdayInput.value);
+
+        // Calculate the current date
+        const currentDate = new Date();
+
+        // Calculate the age
+        const age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+        // Fill in the age input field
+        const ageInput = document.getElementById('age');
+        ageInput.value = age;
+
+        // Check if the age is within the desired range (18 to 35)
+        if (age < 18 || age > 35) {
+            // Display the error message on the form
+            const errorMessageElement = document.getElementById('error-message');
+            errorMessageElement.textContent = "Age must be between 18 and 35 years old.";
+
+            // Optionally, clear the birthday input field
+            birthdayInput.value = "";
+
+            // Optionally, reset the age input field as well
+            ageInput.value = "";
+        } else {
+            // Clear the error message if age is within the desired range
+            const errorMessageElement = document.getElementById('error-message');
+            errorMessageElement.textContent = "";
+        }
+    }, 500); // Adjust the delay (in milliseconds) as needed
 }
+  
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -266,22 +297,56 @@ function validateAppointmentDate() {
     }
 }
 
-// Function to validate appointment time (7 AM to 5 PM)
 function validateAppointmentTime() {
-    var selectedTime = document.getElementById('appointment_time').value;
+    var selectedDateInput = document.getElementById('appointment_date');
+    var selectedTimeInput = document.getElementById('appointment_time');
+    var selectedDate = new Date(selectedDateInput.value);
+    var currentDate = new Date();
+    var selectedDay = selectedDate.getDay(); // 0 (Sunday) to 6 (Saturday)
+    var selectedTime = selectedTimeInput.value;
     var selectedHour = parseInt(selectedTime.split(':')[0], 10);
-    
-    if (selectedHour < 7 || selectedHour >= 17) { // Before 7 AM or after 5 PM
+
+    var isWeekend = selectedDay === 0 || selectedDay === 6; // Saturday (6) or Sunday (0)
+    var isPastTime = selectedDate < currentDate || 
+                     (selectedDate.toDateString() === currentDate.toDateString() && selectedHour < currentDate.getHours());
+    var isOutsideHours = selectedHour < 7 || selectedHour >= 17; // Before 7 AM or after 5 PM
+
+    var errorOccurred = false; // Initialize the error flag
+
+    if (isWeekend) {
+        document.getElementById('date_error').textContent = 'Please select a date on a weekday (Monday to Friday).';
+        selectedDateInput.value = '';
+        errorOccurred = true; // Set the error flag to true
+    } else {
+        document.getElementById('date_error').textContent = '';
+    }
+
+    if (isOutsideHours) {
         document.getElementById('time_error').textContent = 'Please select a time between 7 AM to 5 PM.';
-        document.getElementById('appointment_time').value = '';
+        selectedTimeInput.value = '';
+        errorOccurred = true; // Set the error flag to true
     } else {
         document.getElementById('time_error').textContent = '';
+    }
+
+    if (selectedDate.toDateString() === currentDate.toDateString() && selectedHour < currentDate.getHours()) {
+        document.getElementById('time_error1').textContent = 'Please select a time not in the past.';
+        selectedTimeInput.value = '';
+        errorOccurred = true; // Set the error flag to true
+    } else {
+        document.getElementById('time_error1').textContent = '';
+    }
+
+    // Check the error flag and clear the input field only if an error occurred
+    if (errorOccurred) {
+        selectedTimeInput.value = '';
     }
 }
 
 // Attach event listeners to the date and time inputs
-document.getElementById('appointment_date').addEventListener('change', validateAppointmentDate);
+document.getElementById('appointment_date').addEventListener('change', validateAppointmentTime);
 document.getElementById('appointment_time').addEventListener('change', validateAppointmentTime);
+
 
 
 // Get the date input elements

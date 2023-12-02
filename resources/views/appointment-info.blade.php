@@ -3,33 +3,42 @@
         <div class="container text-center col-md-12 ">
                 <div class="container text-center col-md-12">
                     <div class="h1">Patient Record</div>
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <div class="row">
                         <div class="col-12">
-                        <form action="{{ route('store') }}" method="POST">
+                        <form action="{{ route('admin.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="appointment_id" value="{{ $appointment->id }}">
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label for="lastName" class="form-label">Last Name:</label>
-                                    <input type="text" value="{{ $appointment->last_name }}" class="form-control" id="lastName" name="lastname">
+                                    <input type="text" value="{{ $appointment->last_name }}" class="form-control" id="lastName" name="lastname" oninput="convertToUppercase(this)" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="firstName" class="form-label">First Name:</label>
-                                    <input type="text" value="{{ $appointment->first_name }}" class="form-control" id="firstName" name="firstname">
+                                    <input type="text" value="{{ $appointment->first_name }}" class="form-control" id="firstName" name="firstname" oninput="convertToUppercase(this)" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="middleName" class="form-label">Middle Name:</label>
-                                    <input type="text" value="{{ $appointment->middle_name }}" class="form-control" id="middleName" name="midlename">
+                                    <input type="text" value="{{ $appointment->middle_name }}" class="form-control" id="middleName" name="midlename" oninput="convertToUppercase(this)" required>
                                 </div>
                             </div>
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label for="age" class="form-label">Age:</label>
-                                    <input type="number" value="{{ $appointment->age }}" class="form-control" id="age" name="age">
+                                    <input type="number" value="{{ $appointment->age }}" class="form-control" id="age" name="age" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="birthday" class="form-label">Birthday:</label>
-                                    <input type="date" value="{{ $appointment->birthday }}" class="form-control" id="birthday" name="birthday">
+                                    <input type="date" value="{{ $appointment->birthday }}" class="form-control" id="birthday" name="birthday" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="civilStatus" class="form-label">Civil Status:</label>
@@ -42,11 +51,11 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="contact" class="form-label">Contact:</label>
-                                    <input type="text" value="{{ $appointment->contact }}" class="form-control" id="contact" name="contact">
+                                    <input type="text" value="{{ $appointment->contact }}" class="form-control" id="contact" name="contact" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="address" class="form-label">Address:</label>
-                                    <input type="text" value="{{ $appointment->address }}" class="form-control" id="address" name="address">
+                                    <input type="text" value="{{ $appointment->address }}" class="form-control" id="address" name="address"oninput="convertToUppercase(this)" required>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="philhealthBeneficiary" class="form-label">PhilHealth Beneficiary:</label>
@@ -81,7 +90,7 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                         <!-- Add the delete form here -->
-                                                        <form action="{{ route('appointments.destroy', ['id' => $appointment->id]) }}" method="POST">
+                                                        <form action="{{ route('admin.appointments.destroy', ['id' => $appointment->id]) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-danger">Delete</button>

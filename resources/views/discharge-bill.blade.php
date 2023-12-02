@@ -39,8 +39,8 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <i class="fas fa-dollar-sign me-1"></i>
-                        Total Amount
+                     
+                    ₱ Total Amount
                     </div>
                     <div class="card-body">
                         <p class="card-text" id="total-amount">
@@ -53,7 +53,6 @@
             </div>
             
         </div>
-        <a href="{{ route('printBillPreview', ['patientId' => $patient->id]) }}" target="_blank" class="btn btn-primary">Print</a>
-
+        <a href="{{ route('admin.printBillPreview', ['patientId' => encrypt($patient->id)]) }}" target="_blank" class="btn btn-primary">Print</a>
     </main>
 </x-layout>

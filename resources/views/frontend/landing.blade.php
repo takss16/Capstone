@@ -47,6 +47,7 @@
           <li><a class="nav-link scrollto" href="#services">Services</a></li>
           <li><a class="nav-link scrollto" href="#team">Staff</a></li>
           <li><a class="getstarted scrollto" href="{{ route('account.login') }}">Patient Portal</a></li>
+          <li><a class="btn-get-started scrollto" href="{{ route('admin.login') }}">Admin</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -63,7 +64,7 @@
           <h1>Welcome To Pabustan Birthing Clinic</h1>
           <h2>Get Your Online Appointment Now!</h2>
           <div class="d-flex justify-content-center justify-content-lg-start">
-            <a href="{{ route('appointment.login') }}" class="btn-get-started scrollto">Get Appointment</a>
+            <a href="{{ route('login.appointment') }}" class="btn-get-started scrollto">Get Appointment</a>
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
@@ -93,9 +94,9 @@
           <h2>About Us</h2>
         </div>
         <div>
-          <div class="container mb-3">
+          <div class="container card shadow mb-3">
             <div class="row justify-content-center align-items-center">
-              <div class="col-12">
+              <div class="col-12 ">
                 <div class="card">
                   <div class="card-body">
                     <p>
@@ -107,6 +108,7 @@
               </div>
             </div>
           </div>
+
           <div class="row content">
             <div class="col-lg-6">
               <div class="card shadow">
@@ -167,160 +169,38 @@
 
               <div class="col-lg-4 d-flex align-items-stretch">
                 <div class="info">
+                  @if ($contactInfos->isNotEmpty())
                   <div class="address">
                     <i class="bi bi-geo-alt"></i>
                     <h4>Location:</h4>
-                    <p>0192 Riverside st, Dolores Capas Tarlac</p>
+                    <p>{{ $contactInfos[0]->location }}</p>
                   </div>
 
                   <div class="email">
                     <i class="bi bi-envelope"></i>
                     <h4>Email:</h4>
-                    <p>pabustanbirthingclinic@gmail.com</p>
+                    <p>{{ $contactInfos[0]->email }}</p>
                   </div>
 
                   <div class="facebook">
                     <i class="fa-brands fa-facebook"></i>
-                    <h4>facebook:</h4>
-                    <p>Pabustan Birthing Clinic</p>
+                    <h4>Facebook:</h4>
+                    <p>{{ $contactInfos[0]->facebook ?? 'N/A' }}</p>
                   </div>
 
                   <div class="phone">
                     <i class="bi bi-phone"></i>
                     <h4>Call:</h4>
-                    <p>09483439093</p>
+                    <p>{{ $contactInfos[0]->phone }}</p>
                   </div>
+                  @endif
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+
+
     </section><!-- End About Us Section -->
 
-    <!-- ======= Why Us Section ======= -->
-    <section id="why-us" class="why-us section-bg">
-      <div class="container-fluid" data-aos="fade-up">
-        <div class="row">
-          <div class="col-lg-12 d-flex flex-column justify-content-center align-items-stretch order-2 order-lg-1">
-            <div class="content text-center">
-              <h3><strong>Equipments</strong></h3>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit
-              </p>
-            </div>
 
-            <div class="accordion-list">
-              <div class="row">
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"><span>01</span>Kellies <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
-                        <p>
-                          Used for clamping large blood vessels or manipulating heavy tissue.
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" data-bs-target="#accordion-list-2" class="collapsed"><span>02</span>Pick up forceps<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-2" class="collapse" data-bs-parent=".accordion-list">
-                        <p>
-                          Used for grasping tissue or objects.
-
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed"><span>03</span> Needle holder<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
-                        <p>
-                          Made from stainless steel and is used to hold a suturing needle during surgical procedures.
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed"><span>04</span> Cord scissors<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
-                        <p>
-                          Used to cut the umbilical cord after baby birth.
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"><span>05</span>Suction machine <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
-                        <p>
-                          used for removing obstructions like mucus, saliva, blood, or secretions from a person's airway.
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" data-bs-target="#accordion-list-2" class="collapsed"><span>06</span>Drop light<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-2" class="collapse" data-bs-parent=".accordion-list">
-                        <p>
-                          special lamp used to illuminate obscure places and able to handle moderate abuse.
-
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed"><span>07</span> Autoclave<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
-                        <p>
-                          Used to decontaminate certain biological waste and sterilize media, instruments and lab ware.
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-md-6">
-                  <ul>
-                    <li>
-                      <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed"><span>08</span>Delivery table<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
-                      <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
-                        <p>
-                          Designed for suitable in conducting parturient delivery, gynecological surgery, operative abortion, diagnosis and examinations etc. by medical unit.
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section><!-- End Why Us Section -->
 
 
 
@@ -380,10 +260,10 @@
 
         <div class="row">
           <div class="col-lg-9 text-center text-lg-start">
-           
-        </div>
 
-      </div>
+          </div>
+
+        </div>
     </section><!-- End Cta Section -->
 
 
@@ -398,53 +278,23 @@
         </div>
 
         <div class="row">
-
-          <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
+    @foreach ($teamMembers as $member)
+        <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
             <div class="member d-flex align-items-start">
-              <div class="pic"><img src="assets/img/team/PrincessTagaza.png" class="img-fluid" alt=""></div>
-              <div class="member-info">
-                <h4>Princess P. Tagaza</h4>
-                <span>RM,BSM</span>
-                
-                <div class="social">
-                <h5><b>Position: </b> Staff Midwife</h5>
-                </div>
-              </div>
-            </div>
-          </div>
+                <div class="pic"><img src="{{ $member->image_url }}" class="img-fluid" alt=""></div>
+                <div class="member-info">
+                    <h4>{{ $member->name }}</h4>
+                    <span>{{ $member->degrees }}</span>
 
-          <div class="col-lg-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
-            <div class="member d-flex align-items-start">
-              <div class="pic"><img src="assets/img/team/CatherineNuevo.png" class="img-fluid" alt=""></div>
-              <div class="member-info">
-              <h4>Catherine Nuevo</h4>
-                <span>RM,BSM</span>
-                
-                <div class="social">
-                <h5><b>Position: </b> Staff Midwife</h5>
+                    <div class="social">
+                        <h5><b>Position: </b> {{ $member->position }}</h5>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-
-          <div class="col-lg-6 mt-4 mx-auto" data-aos="zoom-in" data-aos-delay="300">
-    <div class="member d-flex align-items-start">
-        <div class="pic"><img src="assets/img/team/FatimaRivera.png" class="img-fluid" alt=""></div>
-        <div class="member-info">
-        <h4>Fatima Rivera</h4>
-                <span>RM,BSM</span>
-                
-                <div class="social">
-                <h5><b>Position: </b> Staff Midwife</h5>
-                </div>
         </div>
-    </div>
+    @endforeach
 </div>
 
-
-
-
-        </div>
 
       </div>
     </section><!-- End Team Section -->
