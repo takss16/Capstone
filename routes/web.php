@@ -5,7 +5,10 @@ use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\filterController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\patientController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ContactInfoController;
@@ -48,13 +51,11 @@ Route::middleware(['disable.back'])->name('admin.')->group(function () { ///////
         Route::put('/patients/{id}', [PatientController::class, 'update'])->name('patients.update');
         Route::get('/search', [PatientController::class, 'searchPatients'])->name('searchPatients');
         Route::get('/patients/{id}/delete', [PatientController::class, 'delete'])->name('delete');
-        Route::delete('/patients/{id}', [PatientController::class, 'destroy'])->name('destroy');
-        //diplay account 
+        Route::delete('/patients/{id}', [PatientController::class, 'destroy'])->name('destroy'); 
         Route::get('/accounts', [PatientController::class, 'viewAccounts'])->name('accounts');
         Route::get('/patients/{id}/maternal', [PatientController::class, 'showMaternalRecord'])->name('maternal');
         Route::get('/patients/{id}/prevMaternal', [PatientController::class, 'prevMaternalRecord'])->name('prevMaternal');
         Route::post('/patients/{id}/maternalrecord', [PatientController::class, 'storeMaternalRecord'])->name('storeMaternalRecord');
-        // Show the edit form for maternal record
         Route::get('/patients/{id}/maternal/editmaternal', [PatientController::class, 'editMaternalRecord'])->name('editMaternalRecord');
         Route::put('/patients/{id}/updatematernal', [PatientController::class, 'updateMaternalRecord'])->name('updateMaternalRecord');
         Route::get('/patients/{id}/deleteMaternal', [PatientController::class, 'showDeleteConfirmation'])->name('showDeleteConfirmation');
@@ -63,7 +64,6 @@ Route::middleware(['disable.back'])->name('admin.')->group(function () { ///////
         Route::post('/patients/{id}/baby', [PatientController::class, 'storeBabyInformation'])->name('storeBabyInformation');
         Route::get('/patients/{id}/child', [PatientController::class, 'showChildForm'])->name('child');
         Route::get('/prevChildForm/{id}', [PatientController::class, 'prevChildForm'])->name('prevChildForm');
-
         Route::get('/patients/{id}/child/editBaby', [PatientController::class, 'editbaby'])->name('editBaby');
         Route::put('/patients/{id}/updatebaby', [PatientController::class, 'updatebaby'])->name('updateBaby');
         Route::get('/confirm-delete-baby/{id}/{babyId}', [PatientController::class, 'confirmDeleteBaby'])->name('confirmDeleteBaby');
@@ -80,7 +80,6 @@ Route::middleware(['disable.back'])->name('admin.')->group(function () { ///////
         Route::get('/patients/{id}/checkup/{checkupId}/print', [PatientController::class, 'ShowPrintCheckup'])->name('patient.printCheckup');
         Route::get('/patients/{id}/admission', [PatientController::class, 'showAdmissionForm'])->name('addmit');
         Route::get('/patients/{id}/prevAdmission', [PatientController::class, 'prevAdmissionForm'])->name('prevAdmission');
-
         Route::post('/patients/{id}/admission', [PatientController::class, 'storeAdmission'])->name('storeAdmission');
         Route::get('/patients/{id}/edit-admission', [PatientController::class, 'editAdmissionForm'])->name('editAdmissionForm');
         Route::post('/patients/{id}/update-admission', [PatientController::class, 'updateAdmission'])->name('updateadmission');
@@ -118,21 +117,38 @@ Route::middleware(['disable.back'])->name('admin.')->group(function () { ///////
         Route::post('/reset-account/{id}', [PatientController::class, 'resetAccount'])->name('reset.account');
         Route::get('/admin/change-password', [PatientController::class, 'showChangePasswordForm'])->name('changePassForm');
         Route::post('/admin/change-password', [PatientController::class, 'changePassword'])->name('changePass');
-        Route::get('/activity-logs',[PatientController::class, 'logs'])->name('activity-logs');
-        Route::get('/contact-infos/create', [ContactInfoController::class, 'create'])->name('contact-infos');
-        Route::post('/contact-infos', [ContactInfoController::class, 'store'])->name('contact.store');
-        Route::put('/admin/contact/{id}', [ContactInfoController::class, 'update'])->name('contact.update');
-        Route::delete('/admin/contact/{id}', [ContactInfoController::class, 'destroy'])->name('contact.destroy');
-        Route::get('/team-members/create', [TeamMemberController::class, 'create'])->name('team-members');
-        Route::post('/admin/team-members', [TeamMemberController::class, 'store'])->name('create-members');
-        Route::get('/admin/team-members/{id}/edit', [TeamMemberController::class, 'edit'])->name('edit-members');
-        Route::put('/admin/team-members/{id}', [TeamMemberController::class, 'update'])->name('update-members');
-        Route::delete('/admin/team-members/{id}/delete', [TeamMemberController::class, 'destroy'])->name('destroy-members');
+       
+        Route::middleware(['admin'])->group(function () {
+                //for admin only
+            Route::get('/activity-logs',[PatientController::class, 'logs'])->name('activity-logs');
+            Route::get('/Other-logs',[PatientController::class, 'otherlogs'])->name('Other-logs');      
+            Route::get('/contact-infos/create', [ContactInfoController::class, 'create'])->name('contact-infos');
+            Route::post('/contact-infos', [ContactInfoController::class, 'store'])->name('contact.store');
+            Route::put('/admin/contact/{id}', [ContactInfoController::class, 'update'])->name('contact.update');
+            Route::delete('/admin/contact/{id}', [ContactInfoController::class, 'destroy'])->name('contact.destroy');
+            Route::get('/team-members/create', [TeamMemberController::class, 'create'])->name('team-members');
+            Route::post('/admin/team-members', [TeamMemberController::class, 'store'])->name('create-members');
+            Route::get('/admin/team-members/{id}/edit', [TeamMemberController::class, 'edit'])->name('edit-members');
+            Route::put('/admin/team-members/{id}', [TeamMemberController::class, 'update'])->name('update-members');
+            Route::delete('/admin/team-members/{id}/delete', [TeamMemberController::class, 'destroy'])->name('destroy-members');
+            Route::get('/monthly-report', [ReportController::class, 'generateMonthlyReport'])->name('monthly-report');
+            Route::get('/admin/annual-report', [ReportController::class, 'generateAnnualReports'])->name('annual-report');
+            Route::get('/admin-users', [AdminUserController::class, 'index'])->name('Users');
+            Route::get('/filter', [filterController::class, 'getData'])->name('filter');
+            Route::get('/otherfilter', [filterController::class, 'Otherlogs'])->name('otherfilter');
+            Route::get('/annual-reports/print', [ReportController::class,  'printReports'])->name('annual-reports.print');
+            Route::get('/create-user', [AdminUserController::class, 'create'])->name('create-user');
+            Route::post('/admin_users', [AdminUserController::class, 'storeUser'])->name('users_store');
+            Route::post('/admin/reset-password/{user}', [AdminUserController::class, 'resetPassword'])->name('reset-password');
+    
+        }); // ETO YUNG DI DAPAT MA ACCESS NI MIDWIFE MASTER
 
-
+       
     });
+
     Route::post('/admin-logout', [PatientController::class, 'adminLogout'])->name('admin.logout');
 });
+
 
 
 

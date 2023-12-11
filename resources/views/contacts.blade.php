@@ -12,7 +12,7 @@
             <div class="card shadow-lg border-0"> <!-- Add the border-0 class to remove the border -->
                 <div class="card-header ">
                     <div class="me-5 ms-5">
-                        <h1>Manage Conatacts</h1>
+                        <h1>Manage Contacts</h1>
                         @if ($contactInfos->isNotEmpty())
                         <section class="maternal-details-section mt-2">
                             <h5 class="section-title">Contact Information</h5>
