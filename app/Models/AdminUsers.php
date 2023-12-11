@@ -19,10 +19,14 @@ class AdminUsers extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'middle_name',
+        'last_name',
         'email',
         'password',
+        'user_level', // Assuming 'user_level' is also part of your model eto yun user ng system niyo ng midwife at admin? yess
     ];
+    
 
     /**
      * The attributes that should be hidden for serialization.
@@ -48,4 +52,19 @@ class AdminUsers extends Authenticatable
     {
         return $this->hasMany(ActivityLog::class, 'user_id');
     }
+
+    // App\Models\AdminUsers.php
+
+// ...
+
+public function isAdmin()
+{
+    return $this->user_level === 'ADMIN';
+}
+
+public function isMidwife()
+{
+    return $this->user_level === 'MIDWIFE';
+}
+
 }

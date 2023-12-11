@@ -16,26 +16,31 @@ class AdminUserSeeder extends Seeder
     {
         DB::table('admin_users')->insert([
             [
-                'name' => 'Miguel',
+                'first_name' => 'Miguel',
+                'Last_name' => 'Manugue',
+                'middle_name' => 'S',
                 'email' => 'taks@example.com',
+                'user_level' => 'admin',
                 'password' => Hash::make('pass123'), // Hash the password
             ],
             [
-                'name' => 'John Paul',
+                'first_name' => 'John Paul',
+                'Last_name' => 'Espinosa',
+                'middle_name' => '',
                 'email' => 'paul@example.com',
+                'user_level' => 'midwife',
                 'password' => Hash::make('pass123'), // Hash the password
             ],
             // Add more records as needed
             [
-                'name' => 'Ace Van',
+                'first_name' => 'Ace Van',
+                'Last_name' => 'Cadiz',
+                'middle_name' => '',
                 'email' => 'ace@example.com',
+                'user_level' => 'midwife',
                 'password' => Hash::make('pass123'), // Hash the password
             ],
-            [
-                'name' => 'Maam Rae',
-                'email' => 'maamrae@example.com',
-                'password' => Hash::make('pass123'), // Hash the password
-            ],
+           
         ]);
     }
 

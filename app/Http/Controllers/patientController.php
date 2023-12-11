@@ -1101,19 +1101,35 @@ public function adminLogout(Request $request)
         ->get();
     
     
-        // Separate logs with null patient_id
-        $logsWithNullPatientId = ActivityLog::with(['user', 'patient'])
-    ->whereNull('patient_id')
-    ->orderBy('created_at', 'desc')
-    ->get();
+
 
 
 
         return view('Activitylogs', [
             'activityLogs' => $activityLogs,
+        
+        ]);
+    }
+    public function Otherlogs(Request $request)
+    {
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+    
+        $query = ActivityLog::with(['user', 'patient'])
+            ->whereNull('patient_id');
+    
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+    
+        $logsWithNullPatientId = $query->orderBy('created_at', 'desc')->get();
+    
+        return view('Otherlogs', [
             'logsWithNullPatientId' => $logsWithNullPatientId,
         ]);
     }
+    
+    
     
     
 

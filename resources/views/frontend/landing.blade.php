@@ -37,7 +37,7 @@
 
       <div class="logo-container d-flex  text-end">
         <img src="assets/img/logo.png" alt="Your Logo" width="50" height="40">
-        <h1 class="logo"><a href="/">PAANAKAN</a></h1>
+        <h1 class="logo"><a href="/">PABUSTAN BIRTHING CLINIC</a></h1>
       </div>
 
       <nav id="navbar" class="navbar">

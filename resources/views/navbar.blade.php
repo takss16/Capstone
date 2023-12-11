@@ -12,12 +12,20 @@
                     </div> -->
                 </form>
                 <!-- Navbar-->
+              <!-- Existing code for the dropdown menu -->
                 <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ route('admin.changePassForm') }}">Account Settings</a></li>
-                        <li><a class="dropdown-item" href="{{ route('admin.activity-logs') }}">Activity Logs</a></li>
+                            <li><a class="dropdown-item" href="{{ route('admin.changePassForm') }}">Account Settings</a></li>
+                            @auth
+                                @if (auth()->user()->user_level == 'ADMIN')
+                                <li><a class="dropdown-item" href="{{ route('admin.activity-logs') }}">Activity Logs</a></li>
+                            <!-- Add a new list item for the monthly report -->
+                            <li><a class="dropdown-item" href="{{ route('admin.monthly-report') }}">Reports</a></li>
+                                @endif
+                            @endauth
+
                             <li><hr class="dropdown-divider" /></li>
                             <li>
                                 <form method="POST" action="{{ route('admin.admin.logout') }}">
@@ -25,10 +33,10 @@
                                     <button type="submit" class="dropdown-item">Logout</button>
                                 </form>
                             </li>
-
                         </ul>
                     </li>
                 </ul>
+
             </nav>
             <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
@@ -38,8 +46,7 @@
                             <a  class="nav-link" href="{{ route('admin.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa fa-solid fa-gauge"></i>
                                 Dashboard                     
-                            </div>
-                                
+                            </div>                               
                             </a>
                             <a  class="nav-link" href="{{ route('admin.showAppointment') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-calendar-check"></i>
@@ -64,7 +71,7 @@
                        
                              <a  class="nav-link" href="{{ route('admin.referral') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-rectangle-list"></i>
-                                Refferal Forms
+                                Referral Forms
                                 </div>
                             </a>
                              <a  class="nav-link" href="{{ route('admin.accounts') }}">
@@ -83,14 +90,22 @@
                                 Manage Billables
                             </a>
                             
-                            <a class="nav-link" href="{{ route('admin.contact-infos') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-id-badge"></i></div>
-                                Manage Web Info
-                            </a>
-                            <a class="nav-link" href="{{ route('admin.team-members') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-people-group"></i></div>
-                                Manage Users
-                            </a>
+                            @auth
+                                @if (auth()->user()->user_level == 'ADMIN')
+                                    <a class="nav-link" href="{{ route('admin.contact-infos') }}">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-id-badge"></i></div>
+                                        Manage Web Info
+                                    </a>
+                                    <a class="nav-link" href="{{ route('admin.Users') }}">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-people-group"></i></div>
+                                        Manage Users
+                                    </a>
+                                @endif
+                            @endauth
+
+
+
+
                         </div>
                     </div>
                 
