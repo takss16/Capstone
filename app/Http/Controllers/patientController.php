@@ -1101,15 +1101,12 @@ public function adminLogout(Request $request)
         ->get();
     
     
-
-
-
-
         return view('Activitylogs', [
             'activityLogs' => $activityLogs,
         
         ]);
     }
+    
     public function Otherlogs(Request $request)
     {
         $startDate = $request->input('start');

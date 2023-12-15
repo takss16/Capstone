@@ -24,6 +24,9 @@ class filterController extends Controller
         return view('Activitylogs',  ['activityLogs' => $activityLogs]);
     }
 
+
+
+    
     public function Otherlogs(Request $request)
     {
         $startDate = $request->input('start');

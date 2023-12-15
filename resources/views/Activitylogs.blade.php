@@ -15,37 +15,58 @@
                         <h4 class="modal-title">Choose Date Range</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="get" action="{{ route('admin.filter') }}">
-                    <div class="modal-body">
-        <div class="mb-3">
-            <label for="FilterDateFrom" class="form-label">Start Date</label>
-            <input type="date" class="form-control" id="FilterDateFrom" name="start" value="{{ request('start') ?? '' }}">
-        </div>
+                    <form method="get" action="{{ route('admin.filter') }}" onsubmit="return validateDateRange()">
+                        <div class="modal-body">
 
-        <div class="mb-3">
-            <label for="FilterDateTo" class="form-label">End Date</label>
-            <input type="date" class="form-control" id="FilterDateTo" name="end" value="{{ request('end') ?? '' }}">
-        </div>
-    </div>
+                            <div class="mb-3">
+                                <label for="FilterDateFrom" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="FilterDateFrom" name="start" value="{{ request('start') ?? '' }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                            </div>
 
-    <!-- Modal Footer -->
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Go</button>
-    </div>
+                            <div class="mb-3">
+                                <label for="FilterDateTo" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="FilterDateTo" name="end" value="{{ request('end') ?? '' }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                            </div>
+                            <div id="dateRangeError" class="text-danger"></div>
+
+                            <!-- JavaScript for Date Validation -->
+                            <script>
+                                function validateDateRange() {
+                                    var startDate = document.getElementById('FilterDateFrom').value;
+                                    var endDate = document.getElementById('FilterDateTo').value;
+                                    var dateRangeError = document.getElementById('dateRangeError');
+
+                                    if (startDate > endDate) {
+                                        dateRangeError.innerHTML = "End date cannot be earlier than the start date";
+                                        return false; // Prevent form submission
+                                    } else {
+                                        dateRangeError.innerHTML = ""; // Clear previous error message
+                                    }
+
+                                    return true; // Allow form submission
+                                }
+                            </script>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Go</button>
+                        </div>
                     </form>
-
 
                 </div>
             </div>
         </div>
+
+
+
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="log-tab" data-bs-toggle="tab" href="#log-content" role="tab" aria-controls="log-content" aria-selected="true">Record Logs</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="another-tab"  href="{{ route('admin.Other-logs') }}">Other Logs</a>
+                <a class="nav-link" id="another-tab" href="{{ route('admin.Other-logs') }}">Other Logs</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -64,7 +85,10 @@
                             <tbody>
                                 @foreach ($activityLogs as $log)
                                 <tr>
-                                    <td style="border: 1px solid #000;">{{ $log->user->name }}</td>
+                                    <td style="border: 1px solid #000;">
+                                        {{ $log->users->name }}
+
+                                    </td>
                                     <td style="border: 1px solid #000;">{{ $log->action }}</td>
                                     @if ($log->patient)
                                     <td style="border: 1px solid #000;">
@@ -86,7 +110,8 @@
                     </div>
                 </div>
             </div>
-          
+
         </div>
     </main>
+
 </x-layout>

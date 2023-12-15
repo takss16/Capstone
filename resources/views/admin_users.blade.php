@@ -5,6 +5,11 @@
         {{ session('success') }}
     </div>
 @endif
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
         <div class="text-end mb-3">
             <a  href="{{ route('admin.create-user') }}" class="btn btn-primary">
                 <i class="fa-solid fa-user-plus"></i> Add Users
@@ -39,9 +44,14 @@
             <td>{{ $user->email }}</td>
             <td>{{ $user->user_level }}</td>
             <td>
+          
+            <a href="{{ route('admin.usersPreview', ['id' => encrypt($user->id)]) }}" class="btn btn-primary">
+                        <i class="fa-solid fa-user"></i>Profile
+                    </a>
+
                 <!-- Button to trigger the reset password modal -->
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#resetPasswordModal{{ $user->id }}">
-                    Reset Password
+                <i class="fa-solid fa-clock-rotate-left"></i> Reset Password
                 </button>
 
                 <!-- Reset Password Modal -->
@@ -60,7 +70,7 @@
                                 <form method="post" action="{{ route('admin.reset-password', ['user' => $user->id]) }}">
                     @csrf
                     <!-- Your form fields go here -->
-                    <button type="submit">Reset Password</button>
+                    <button type="submit" class="btn btn-primary">Reset Password</button>
                 </form>
 
                             </div>
