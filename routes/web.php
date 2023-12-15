@@ -38,11 +38,14 @@ use App\Http\Controllers\RegistrationController;
 
 // ->name('admin.') - yan part na yan ay automatic na siya named if.... nasa loob sila example gusto mo redirect yun login form ay 
 // admin.login try mo nga i run then punta sa admin
+Route::get('/forgot-password', [AdminUserController::class, 'showForgotPasswordForm'])->name('password.forgot');
+Route::post('/forgot-password', [AdminUserController::class, 'sendPasswordResetLink'])->name('password.forgot.submit');
 Route::middleware(['disable.back'])->name('admin.')->group(function () { ///////////////////////////////////////////////
     Route::get('/login', [AdminController::class, 'showLoginForm'])->name('login');
     Route::post('/admin/login', [AdminController::class, 'login'])->name('login.check');
-
+  
     Route::middleware(['auth:admin'])->group(function () {
+        
         Route::get('/index', [PatientController::class, 'index'])->name('index');
         Route::get('/creates', [PatientController::class, 'create'])->name('create');
         Route::get('/records', [PatientController::class, 'records'])->name('records');
@@ -140,7 +143,10 @@ Route::middleware(['disable.back'])->name('admin.')->group(function () { ///////
             Route::get('/create-user', [AdminUserController::class, 'create'])->name('create-user');
             Route::post('/admin_users', [AdminUserController::class, 'storeUser'])->name('users_store');
             Route::post('/admin/reset-password/{user}', [AdminUserController::class, 'resetPassword'])->name('reset-password');
-    
+            Route::get('/admin/preview-user/{id}', [AdminUserController::class, 'previewUser'])->name('usersPreview');
+            Route::put('/admin/update-user/{id}', [AdminUserController::class, 'updateUser'])->name('updateUser');
+            Route::get('/admin/delete-user/{id}', [AdminUserController::class, 'deleteUser'])->name('deleteUser');
+
         }); // ETO YUNG DI DAPAT MA ACCESS NI MIDWIFE MASTER
 
        

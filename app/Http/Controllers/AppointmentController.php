@@ -27,11 +27,10 @@ class AppointmentController extends Controller
     public function handleGoogleCallback()
     {
         $user = Socialite::driver('google')->user();
-
-
+    
         // Check if the user with this email already exists
         $existingUser = User::where('email', $user->email)->first();
-
+    
         if ($existingUser) {
             // If the user exists, log them in
             Auth::login($existingUser);
@@ -40,26 +39,25 @@ class AppointmentController extends Controller
             $newUser = new User();
             $newUser->email = $user->email;
             $newUser->password = ''; // You can set a default password or generate one
-
+    
             // Split the full name into first name, middle name, and last name
             $nameParts = explode(' ', $user->name);
-
-            // Assign the name parts to user fields
-            $newUser->first_name = isset($nameParts[0]) ? $nameParts[0] : '';
-            $newUser->last_name = isset($nameParts[1]) ? $nameParts[1] : '';
-            $newUser->middle_name = isset($nameParts[2]) ? $nameParts[2] : '';
-
-
+    
+            // Assign the uppercase name parts to user fields
+            $newUser->first_name = isset($nameParts[0]) ? strtoupper($nameParts[0]) : '';
+            $newUser->last_name = isset($nameParts[1]) ? strtoupper($nameParts[1]) : '';
+            $newUser->middle_name = isset($nameParts[2]) ? strtoupper($nameParts[2]) : '';
+    
             $newUser->save();
-
+    
             // Log in the new user
             Auth::login($newUser);
         }
-
-
+    
         // Redirect the user to the desired page after login
         return redirect()->route('appointment.user.info')->with('success', 'You have successfully logged in.');
     }
+    
     // In your controller
     // In your controller
     public function showUserinfo()
